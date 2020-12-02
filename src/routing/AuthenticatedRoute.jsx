@@ -1,0 +1,15 @@
+import AuthenticationService from '../service/AuthenticationService'
+const { Component } = require("react");
+const { Route, Redirect } = require("react-router-dom");
+
+class AuthenticatedRoute extends Component{
+    render(){
+        if(AuthenticationService.isUserLoggedIn()){
+            return <Route {...this.props}/>
+        }
+        else{
+           return <Redirect to="/login"/>
+        }
+    }
+}
+export default AuthenticatedRoute
