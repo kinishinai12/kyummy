@@ -80,7 +80,9 @@ class ProductDetailsComponent extends Component{
                   products => 
                 
                   <PCard key={products.id}>
-                    <PImg src={products.img} alt={products.alt}/>
+                    <PImg src={products.img} 
+                        alt={products.alt} 
+                          onClick={()=>this.productImageClicked(products.id)}/>
                     <PInfo>
                       <PTitle>{products.name}</PTitle>
                       <PDesc>{products.desc}</PDesc>

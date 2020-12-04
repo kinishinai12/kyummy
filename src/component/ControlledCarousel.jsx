@@ -9,6 +9,7 @@ import product4 from '../image/product4.jpg';
 import product5 from '../image/product5.jpg';
 import product6 from '../image/product6.jpg';
 import product7 from '../image/product7.jpg';
+import { withRouter } from 'react-router-dom';
 // import mart from '../image/mart.jpg';
 // import pork from '../image/pork.jpg';
 // import sidedish from '../image/sidedish.jpg';
@@ -34,13 +35,14 @@ class ControlledCarousel extends Component{
     )
   }
 
-  clicked=()=>{
-    console.log("clickeds")
+  koreanFameClicked=(id)=>{
+    console.log(id)
+    this.props.history.push(`/details/${id}`)
   }
 
   BestSellerl =()=> {
     return (
-      <Container style={{'marginTop': "80px", 'marginBottom': "5px" }}>
+      <Container style={{'marginTop': "100px", 'marginBottom': "5px" }}>
 
           <Carousel interval={500}>
             
@@ -49,7 +51,7 @@ class ControlledCarousel extends Component{
               this.state.productImg.map(
                 
                 bestSeller =>
-                <Carousel.Item style={{ 'height': "400px"}} key={bestSeller.id} onClick={this.clicked}>
+                <Carousel.Item style={{ 'height': "400px"}} key={bestSeller.id} onClick={()=>this.koreanFameClicked(bestSeller.id)}>
                 <img className="d-block w-100" src={bestSeller.img} alt={bestSeller.alt} style={{"height":'380px', "width":'380px'}}/>
               <Carousel.Caption>
               <h3><Badge variant="danger">{bestSeller.label}</Badge></h3>
@@ -118,4 +120,4 @@ class ControlledCarousel extends Component{
 
 
 
-  export default ControlledCarousel
+  export default withRouter(ControlledCarousel)

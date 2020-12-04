@@ -15,7 +15,7 @@ import MoreProductsComponent from './MoreProductsComponent';
 import AuthenticatedRoute from '../routing/AuthenticatedRoute';
 import ProductDescriptionComponent from './ProductDescriptionComponent';
 
-
+// guys dto nio makikita yung mga route, saka dto ko pinagsamasama ung mga component na ginawa ko
 class Kyummy extends Component{
     render() {
         return (
@@ -24,7 +24,9 @@ class Kyummy extends Component{
                     
                     <HeaderComponent/>
                     <Switch>
+                        {/* responsible for home */}
                         <Route path="/" exact component={HomeComponent}/>
+                        {/* responsible for when the user is logged in */}
                         <AuthenticatedRoute path="/home/:email" component={HomeComponent}/>
                         <Route path="/signup" component = {SignUpComponent}/>
                         <Route path="/login" component={LoginComponent}/>

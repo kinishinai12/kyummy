@@ -44,7 +44,7 @@ class CategoryComponent extends Component{
       ];
 
       return (
-        <div className="container" style={{'marginTop':"35px"}}>
+        <div className="container" style={{'marginTop':"30px"}}>
           <div style={{'textAlign': "center"}}><h1>Categories</h1></div>
           <Carousel breakPoints={breakPoints}
             renderPagination={({ pages, activePage, onClick }) => {

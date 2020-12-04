@@ -49,6 +49,7 @@ class SignUpComponent extends Component {
                     </Form.Row>
 
                     <Form.Group id="formGridCheckbox">
+                        {/* TODO: term of use and pricacy policy */}
                         <Form.Check type="checkbox" label="I agree to Kyummy's, Terms of Use and Privacy Policy" />
                     </Form.Group>
 
