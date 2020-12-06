@@ -14,7 +14,7 @@ import {
 } from './productstyled/ProductComponents';
 import { Link, withRouter } from 'react-router-dom'
 
-class ProductDetailsComponent extends Component{
+class KoreanFameComponent extends Component{
     state={
       product: [
           {
@@ -55,7 +55,7 @@ class ProductDetailsComponent extends Component{
     render() {
         return (
             <PContainer>
-            <PHeading>Products From korea</PHeading>
+            <PHeading>Korean Fame</PHeading>
             <PWrapper>
               {
               this.state.product.map(
@@ -83,4 +83,4 @@ class ProductDetailsComponent extends Component{
     }
 }
 // as={Link} to="/moreproducts"
-export default withRouter(ProductDetailsComponent)
+export default withRouter(KoreanFameComponent)

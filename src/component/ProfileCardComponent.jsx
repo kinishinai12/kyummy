@@ -16,7 +16,7 @@ export default class ProfileCardComponent extends Component {
                         
                 {/* </Card> */}
                 <CardGroup>
-                <Card  style={{display: 'flex', flexDirection: 'row'}}>
+                <Card style={{display: 'flex', flexDirection: 'row'}}>
                     
                     <Card.Body>
                     <Card.Title><Card.Img src={pork} style={{width:'10rem'}} /> </Card.Title>

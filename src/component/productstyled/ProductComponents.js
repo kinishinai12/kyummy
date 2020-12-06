@@ -4,8 +4,9 @@ export const PContainer = styled.div`
   /* width: 100vw; */
   min-height: 100vh;
   padding: 5rem calc((100vw - 1300px) / 2);
-  background-color: #e96196;
-  background-image: linear-gradient(315deg, #e96196 0%, #ffffff 74%); 
+  background-color: #fff;
+  // background-color: #e96196;
+  // background-image: linear-gradient(315deg, #e96196 0%, #ffffff 74%); 
   color: #000;
 `;
 
@@ -26,6 +27,7 @@ export const PImg = styled.img`
   height: 300px;
   min-width: 300px;
   max-width: 100%;
+  box-shadow: 8px 8px #e96196;
 `;
 
 /*
@@ -66,7 +68,7 @@ export const PPrice = styled.p`
 export const PButton = styled.button`
   font-size: 1rem;
   padding: 1rem 2rem;
-  border: none;
+  border: outline;
   background: #fff;
   color: #000;
   transition: 0.2 ease-out;
