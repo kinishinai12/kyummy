@@ -5,6 +5,8 @@ import ProductDetailsComponent from './ProductDetailsComponent';
 import KoreanFameComponent from './KoreanFameComponent';
 
 class HomeComponent extends Component{
+
+    // <Spinner animation="border" variant="danger" />
     render() {
         return (
             <>

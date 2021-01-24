@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import pork from '../image/pork.jpg';
+// import pork from '../image/pork.jpg';
+import WelcomePageService from '../springboot api/WelcomePageService';
+import Pagination from 'react-bootstrap/Pagination'
 import {
   PContainer,
   PWrapper,
@@ -8,121 +10,101 @@ import {
   PCard,
   PImg,
   PInfo,
-  PDesc,
+  // PDesc,
   PPrice,
   PButton
 } from './productstyled/ProductComponents';
-import Pagination from 'react-bootstrap/Pagination'
+import Container from 'react-bootstrap/esm/Container';
+// import ScrollToTop from './ScrollToTop';
+import Spinner from 'react-bootstrap/Spinner'
+
 
 export default class MoreProductsComponent extends Component {
-    state={
-        product: [
-            {
-                id:1,
-                img: pork,
-                alt: 'korean Product',
-                name: 'beef',
-                desc:'putangina',
-                price: 'PHP 200',
-                button: 'Add to Cart'
-              },
-              {
-                id:2,
-                img: pork,
-                alt: 'korean Product',
-                name: 'beef',
-                desc:'putangina',
-                price: 'PHP 200',
-                button: 'Add to Cart'
-              },
-              {
-                id:3,
-                img: pork,
-                alt: 'korean Product',
-                name: 'beef',
-                desc:'putangina',
-                price: 'PHP 200',
-                button: 'Add to Cart'
-              },
-              {
-                id: 4,
-                img: pork,
-                alt: 'korean Product',
-                name: 'beef',
-                desc:'putangina',
-                price: 'PHP 200',
-                button: 'Add to Cart'
-              },
-              {
-                id: 5,
-                img: pork,
-                alt: 'korean Product',
-                name: 'beef',
-                desc:'putangina',
-                price: 'PHP 200',
-                button: 'Add to Cart'
-              }
-        ]
+  constructor(props){
+    super(props);
+
+    this.state={
+      product: [],
+
+       currentPage: 1,
+       count: 0,
+       productPerPage: 10,
+       isLoading:true,
+  };
+
+  }
+
+    componentDidMount(){
+      this.retrieveProducts()
+      
+      
     }
+
+    retrieveProducts=()=>{
+      let page = this.state.currentPage - 1;
+      let productPerPage = 21;
+      WelcomePageService.executeGetAllProduct(page, productPerPage)
+      .then(
+        response => {
+          this.setState({
+            product: response.data.content,
+            count: response.data.totalPages,
+            isLoading:false
+          })
+        }
+      )
+    }
+//TODO: catch in axios
+    pageChange=(value)=>{
+      this.setState({
+        currentPage: value
+      },
+      () => {
+        this.retrieveProducts();
+      }
+      );
+    }
+
     render() {
+      let items = [];
+        for (let number = 1; number <= this.state.count; number++) {
+          items.push(
+            <Pagination.Item key={number} active={number===this.state.currentPage} onClick={()=>this.pageChange(number)}>
+              {number}
+            </Pagination.Item>,
+          );
+        }
+ 
         return (
+          
             <PContainer>
-            <PHeading>Products From korea</PHeading>
+              
+            <PHeading>Kyummy's Products</PHeading>
             <PWrapper>
+            {this.state.isLoading&&<Spinner animation="grow" variant="danger"/>} 
               {
               this.state.product.map(
                   products => 
                 
                   <PCard key={products.id}>
-                    <PImg src={products.img} alt={products.alt} />
+                    <PImg src={products.img} alt={products.id} />
                     <PInfo>
-                      <PTitle>{products.name}</PTitle>
-                      <PDesc>{products.desc}</PDesc>
-                      <PPrice>{products.price}</PPrice>
-                      <PButton>{products.button}</PButton>
+                      <PTitle>{products.productName}</PTitle>
+                      <PPrice>₱ {products.price}</PPrice>
+                      <PButton>Add to cart</PButton>
                     </PInfo>
                   </PCard>
                 )
               }
             </PWrapper>
+           <Container>
 
-            <PInfo>
-                  <Pagination size="sm">
-                    <Pagination.Item>
-                          1
-                    </Pagination.Item>
-                    <Pagination.Item>
-                          2
-                    </Pagination.Item>
-                    <Pagination.Item>
-                          3
-                    </Pagination.Item>
-                    <Pagination.Item>
-                          4
-                    </Pagination.Item>
-                  </Pagination>
-                </PInfo>
-
+            <Pagination >
+              {items}
+            </Pagination>
+            </Container>
           </PContainer>
         )
     }
 }
 
-
-{/* <Pagination>
-  <Pagination.First />
-  <Pagination.Prev />
-  <Pagination.Item>{1}</Pagination.Item>
-  <Pagination.Ellipsis />
-
-  <Pagination.Item>{10}</Pagination.Item>
-  <Pagination.Item>{11}</Pagination.Item>
-  <Pagination.Item active>{12}</Pagination.Item>
-  <Pagination.Item>{13}</Pagination.Item>
-  <Pagination.Item disabled>{14}</Pagination.Item>
-
-  <Pagination.Ellipsis />
-  <Pagination.Item>{20}</Pagination.Item>
-  <Pagination.Next />
-  <Pagination.Last />
-</Pagination> */}

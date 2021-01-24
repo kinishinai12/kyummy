@@ -1,27 +1,38 @@
 import React, { Component } from 'react'
-import pork from '../image/pork.jpg';
-import Media from 'react-bootstrap/Media'
+// import Media from 'react-bootstrap/Media'
 import Container from 'react-bootstrap/Container'
-import CardDeck from 'react-bootstrap/CardDeck'
+// import CardDeck from 'react-bootstrap/CardDeck'
 import Button from 'react-bootstrap/Button'
 import Card from 'react-bootstrap/esm/Card';
-// import {
-//     PContainer,
-//     PWrapper,
-//     PHeading,
-//     PTitle,
-//     PCard,
-//     PImg,
-//     PInfo,
-//     PDesc,
-//     PPrice,
-//     PButton
-//   } from './productstyled/ProductComponents';
+import WelcomePageService from '../springboot api/WelcomePageService';
+import { withRouter } from 'react-router-dom'
+import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
+import '@brainhubeu/react-carousel/lib/style.css';
+// import pork from '../image/pork.jpg';
+import {
+//     // PContainer,
+//     // PWrapper,
+//     // PHeading,
+//     // PTitle,
+//     // PCard,
+//     PImg
+//     // PInfo,
+//     // PDesc,
+         //PPrice,
+//     // PButton
+ } from './productstyled/ProductComponents';
 
-export default class ProductDescriptionComponent extends Component {
+
+class ProductDescriptionComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { windowWidth: window.innerWidth };
+    this._isMounted = false;
+    this.state = {
+      windowWidth: window.innerWidth,
+      img:"",
+      productName:'',
+      productDescription:''
+    };
   }
 
 
@@ -30,85 +41,151 @@ export default class ProductDescriptionComponent extends Component {
    };
   
    componentDidMount() {
+    this._isMounted = true;
+    this.refresh();
+    
     window.addEventListener("resize", this.handleResize);
+    
    }
-  
+   // TODO: catch statement
+   refresh=()=>{
+    if(this.props.match.params.id === "-1"){
+      console.log("tumama ka den")
+      console.log(this.props.match.params.id)
+      console.log(this.props.match.params.productid);
+      WelcomePageService.executeServiceGetKoreanFameProductById(this.props.match.params.productid)
+      .then(response => {
+        console.log(response.data.img)
+        this.setState({img: response.data.img, productName: response.data.productName, productDescription: response.data.productDescription})
+      })
+  }else{
+    console.log("bakit ka dumederetso dito")
+    WelcomePageService.executeGetProductById(this.props.match.params.id)
+    .then(
+      response => {
+        this.setState({img: response.data.img, productName: response.data.productName, productDescription: response.data.productDescription})
+        
+      }
+    )
+  }
+   }
    componentWillUnmount() {
+     
+     console.log("componentWillUnmount")
+     if(this._isMounted === true){
+      this._isMounted = false;
     window.addEventListener("resize", this.handleResize);
+     }
    } 
+//   shouldComponentUpdate(nextProps,nextState){
+//     if(this.props.match.params.id !== nextState.id){
+//     console.log(nextState)
+//     console.log(nextProps)
+//       console.log("shouldComponentUpdate")
+//       this.refresh();
+//       return true
+//     }
+//     return false
+// }
+ 
+   //TODO: Catch statement
+   componentDidUpdate(prevProps, prevState) {
+    if(this._isMounted === true){
+      if (prevProps.match.params.id !== this.props.match.params.id) {
+        console.log(prevProps)
+        console.log(prevState)
+        console.log("componentDidUpdate")
+        this.refresh();
+        
+      }
+      else{
+        
+        console.log("componentDidUpdate but no changes occur")
+      }
+  }
+  else{
+    console.log("memory leaked")
+  }
+  }
 
     render() {
       const { windowWidth } = this.state; 
+      console.log(windowWidth);
         return (
-            <Container style={{'marginTop': "100px", 'marginBottom': "45px" }}>
-             {windowWidth>=543 && <CardDeck>
-                  <Card>
-                    <Media>
-                    <img
+            <Container style={{'marginTop': "100px", 'marginBottom': "45px" }} >
+             {windowWidth>=999 &&
+                  <Card style={{display: 'flex', flexDirection: 'row'}}>
+                        
+                        <Carousel 
+                        plugins={[
+                          'infinite',
+                          'fastSwipe',
+                          {
+                            resolve: slidesToShowPlugin,
+                            options: {
+                             numberOfSlides: 1
+                            }
+                          },
+                        ]}>
+                        
+                          <Card.Img
                           variant = "top"
-                            width={210}
-                            height={210}
-                            className="mr-3"
-                            src={pork}
-                            alt="it's pork"
-                          />
-                    <Media.Body>
-                      <Card.Title>Card title</Card.Title>
+                          className="mr-3"
+                          src={this.state.img}
+                          alt ="network error"
+                          style={{ width: '18rem' }}
+                           />
+                           
+                        </Carousel>
+                        
+                        
+                    
+                      <Card.Body>
+                      <Card.Title>{this.state.productName}</Card.Title>
+                      <Card.Title as="h6">
                       <Card.Text>
-                        This is a wider card with supporting text below as a natural lead-in to
-                        additional content. This content is a little bit longer.
+                        {this.state.productDescription} Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut soluta, mollitia modi excepturi accusantium ipsum dolores est blanditiis harum libero rerum repellat obcaecati dolore incidunt nobis distinctio laborum, labore sunt!
                       </Card.Text>
                       <Card.Link as={Button} variant="danger">Buy now</Card.Link>
-                    <Card.Link as={Button} variant="outline-dark">Add to cart</Card.Link>
-                    </Media.Body>
-                    </Media>
+                      
+                      </Card.Title>
+                      <Card.Link as={Button} variant="outline-dark">Add to cart</Card.Link>
+                      </Card.Body>
+                    
+                   
                   </Card>            
-            </CardDeck> }   
+            }   
 
 
-            {windowWidth<=543 && <Card>
-              <Card.Img variant="top" src={pork}/>
-              <Card.Body>
-                <Card.Title>Card Title</Card.Title>
-                <Card.Text>
-                  Some quick example text to build on the card title and make up the bulk of
-                  the card's content.
-                </Card.Text>
-                <Card.Link><Button variant="danger">Buy now</Button></Card.Link>
-              </Card.Body>
-              <Card.Body>
-                
-                <Card.Link><Button variant="outline-dark">Add to cart</Button></Card.Link>
-              </Card.Body>
-            </Card>}
+                {windowWidth<=998 && <Card>
+                  <Carousel
+                  plugins={[
+                    'infinite',
+                    'fastSwipe',
+                    {
+                      resolve: slidesToShowPlugin,
+                      options: {
+                       numberOfSlides: 1
+                      }
+                    },
+                  ]}><Card.Img variant="top" src={this.state.img}/></Carousel>
+                  <Card.Body>
+                    <Card.Title>Card Title</Card.Title>
+                    <Card.Text >
+                      Some quick example text to build on the card title and make up the bulk of
+                      the card's content.
+                    </Card.Text>
+                    <Card.Link><Button variant="danger">Buy now</Button></Card.Link>
+                  </Card.Body>
+                  <Card.Body>
+                    
+                    <Card.Link><Button variant="outline-dark">Add to cart</Button></Card.Link>
+                  </Card.Body>
+                </Card>}
 
           </Container>
         )
     }
 }
- /* <Card style={{'marginTop': "80px"}}>
-                <Media style={{'marginTop': "30px", 'padding': "1%"}}>
-                  <img
-                    width={200}
-                    height={200}
-                    className="align-self-center mr-3"
-                    src={pork}
-                    alt="it's pork"
-                  />
-                  <Media.Body>
-                    <h5>Media Heading</h5>
-                    <p>
-                      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque
-                      ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at,
-                      tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate
-                      fringilla. Donec lacinia congue felis in faucibus.
-                    </p>
 
-                    <p>
-                      Donec sed odio dui. Nullam quis risus eget urna mollis ornare vel eu
-                      leo. Cum sociis natoque penatibus et magnis dis parturient montes,
-                      nascetur ridiculus mus.
-                    </p>
-                  </Media.Body>
-                </Media>
-                </Card> */
+export default withRouter(ProductDescriptionComponent)

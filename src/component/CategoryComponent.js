@@ -8,22 +8,35 @@ import Flex from './style.for.categorycomponent/Flex'
 import Carousel, { consts } from 'react-elastic-carousel';
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { withRouter } from 'react-router-dom';
+import WelcomePageService from '../springboot api/WelcomePageService';
+import Spinner from 'react-bootstrap/Spinner'
+
 
 
 class CategoryComponent extends Component{
     state ={
-      category: [
-        {id: 1, categoryName: 'Samgyeupsal'},
-        {id: 2, categoryName: 'Hot-Pot'},
-        {id: 3, categoryName: 'Beverages'},
-        {id: 4, categoryName: 'Chips'},
-        {id: 5, categoryName: 'Alcohols'},
-        {id: 7, categoryName: 'Ice Cream'},
-        {id: 8, categoryName: 'Snack'},
-        {id: 9, categoryName: 'Frozen Meat'},
-        {id: 10, categoryName: 'Noodles'},
-        {id: 11, categoryName: 'Utensils & Equipments'}
-      ]
+      category: [],
+      isLoading:true,
+      isErrorOccur: false,
+      error:'',
+    }
+
+    handleError=(response)=>{
+      console.log(response)
+      this.setState({isLoading:false, isErrorOccur: true, error:"Network Error/ Can't load the data"})
+    }
+
+    componentDidMount(){
+      this.refresh();
+    }
+
+    refresh =() =>{
+      WelcomePageService.executeGetAllCategoryService()
+      .then(
+        response => {
+          this.setState({category: response.data, isLoading:false})
+        }
+      ).catch(error => this.handleError(error))
     }
 
     myArrow({ type, onClick, isEdge }) {
@@ -45,7 +58,7 @@ class CategoryComponent extends Component{
 
       return (
         <div className="container" style={{'marginTop':"30px"}}>
-          <div style={{'textAlign': "center"}}><h1>Categories</h1></div>
+          {!this.state.isErrorOccur && <div style={{'textAlign': "center"}}><h1>Categories</h1></div>}
           <Carousel breakPoints={breakPoints}
             renderPagination={({ pages, activePage, onClick }) => {
               return (
@@ -64,8 +77,10 @@ class CategoryComponent extends Component{
               )
             }}
             renderArrow={this.myArrow}
-            >     
-              {
+            > 
+            {this.state.isLoading&&<Spinner animation="grow" variant="danger"/>}
+            {this.state.isErrorOccur && <div>{this.state.error}</div>}
+              {!this.state.isErrorOccur &&
                 this.state.category.map(
                   categories => 
                   <Item key={categories.id} onClick={()=>this.itemClicked(categories.categoryName)}>
@@ -73,6 +88,7 @@ class CategoryComponent extends Component{
                   </Item>
                 )
               }
+              
             
             
           </Carousel>
@@ -83,7 +99,7 @@ class CategoryComponent extends Component{
 
     itemClicked=(categoryName)=>{
       console.log(categoryName)
-      this.props.history.push(`/moreproducts/${categoryName}`)
+      this.props.history.push(`/products/${categoryName}`)
     }
   }
 export default withRouter(CategoryComponent)

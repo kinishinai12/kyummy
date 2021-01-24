@@ -14,6 +14,10 @@ import HelpCenterComponent from './HelpCenterComponent';
 import MoreProductsComponent from './MoreProductsComponent';
 import AuthenticatedRoute from '../routing/AuthenticatedRoute';
 import ProductDescriptionComponent from './ProductDescriptionComponent';
+import KoreanFameProduct from './KoreanFameProduct';
+import ScrollToTop from './ScrollToTop';
+import ProductByCategoryComponent from './ProductByCategoryComponent';
+
 
 // guys dto nio makikita yung mga route, saka dto ko pinagsamasama ung mga component na ginawa ko
 class Kyummy extends Component{
@@ -21,8 +25,8 @@ class Kyummy extends Component{
         return (
             <>
                 <Router>
-                    
-                    <HeaderComponent/>
+                <ScrollToTop/>
+                    <HeaderComponent history={this.props.history}/>
                     <Switch>
                         {/* responsible for home */}
                         <Route path="/" exact component={HomeComponent}/>
@@ -33,8 +37,13 @@ class Kyummy extends Component{
                         <AuthenticatedRoute path="/account" component={AccountComponent}/>
                         <Route path="/help" component={HelpCenterComponent}/>
                         <Route path="/moreproducts" component={MoreProductsComponent}/>
-                        <Route path="/moreproducts/:categoryName" component={MoreProductsComponent}/>
-                        <Route path="/details/:id" component={ProductDescriptionComponent}/>
+                        <Route path="/koreanfame" component={KoreanFameProduct}/> 
+                        <Route path="/products/:categoryName" component={ProductByCategoryComponent}/>
+                        <Route exact path="/details/:id">
+                        <ProductDescriptionComponent/>
+                        </Route>
+                        
+                        <Route path="/details/:id/:productid" exact component={ProductDescriptionComponent}/>
                         <Route component={ErrorOccur}/>
                     </Switch>
                     <FooterComponent/>
@@ -47,10 +56,3 @@ class Kyummy extends Component{
 }
 
 export default Kyummy
-
-/*
-    old component attached, i comment it out coz i need to route component as one, so i put it in one component in HomeComponent
-<ControlledCarousel/>
- <CategoryComponent/>
-<ProductDetailsComponent/>
-*/
