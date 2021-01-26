@@ -56,6 +56,12 @@ class SearchComponent extends Component{
 
         
     }
+    // to pass the input data to url
+    searchButtonClicked=()=>{
+        this.setState({query:''});
+        this.props.history.push(`/search/${this.state.query}`);
+    }
+    // to clear the input
     searhedClicked=()=>{
         this.setState({query:''});
     //    this.props.history.push(`/details/${id}`)
@@ -130,7 +136,7 @@ class SearchComponent extends Component{
                     
                     </OverlayTrigger>
                         <InputGroup.Append>
-                            <Button variant="outline-dark"><FaSearch/></Button>
+                            <Button variant="outline-dark" onClick={this.searchButtonClicked}><FaSearch/></Button>
                         </InputGroup.Append>
                 </InputGroup>
                 
@@ -140,4 +146,4 @@ class SearchComponent extends Component{
     }
 }
 
-export default withRouter(SearchComponent)
+export default withRouter(SearchComponent);

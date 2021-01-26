@@ -3,19 +3,12 @@ import Container from 'react-bootstrap/Container'
 import WelcomePageService from '../springboot api/WelcomePageService';
 import React, { Component } from "react";
 import Badge from 'react-bootstrap/Badge'
-
 import Spinner from 'react-bootstrap/Spinner'
-// import product1 from '../image/product1.jpg';
-// import product2 from '../image/product2.jpg';  /productImages/koreanfame/product1.jpg
-// import product3 from '../image/product3.jpg';
-// import product4 from '../image/product4.jpg';
-// import product5 from '../image/product5.jpg';
-// import product6 from '../image/product6.jpg';
-// import product7 from '../image/product7.jpg';
 import { withRouter } from 'react-router-dom';
-// import mart from '../image/mart.jpg';
-// import pork from '../image/pork.jpg';
-// import sidedish from '../image/sidedish.jpg';
+
+
+
+//TODO imageClicked to redirect to the productDescription
 class ControlledCarousel extends Component{
   constructor(){
     super()

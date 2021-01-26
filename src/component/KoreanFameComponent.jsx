@@ -30,7 +30,7 @@ class KoreanFameComponent extends Component{
   }
     
 
-
+//TODO: pagination
 
   componentDidMount(){
     this.refresh();

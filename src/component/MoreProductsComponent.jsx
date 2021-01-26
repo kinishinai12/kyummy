@@ -36,8 +36,6 @@ export default class MoreProductsComponent extends Component {
 
     componentDidMount(){
       this.retrieveProducts()
-      
-      
     }
 
     retrieveProducts=()=>{
@@ -49,7 +47,7 @@ export default class MoreProductsComponent extends Component {
           this.setState({
             product: response.data.content,
             count: response.data.totalPages,
-            isLoading:false
+            isLoading:false,
           })
         }
       )

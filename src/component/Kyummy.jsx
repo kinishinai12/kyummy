@@ -17,6 +17,7 @@ import ProductDescriptionComponent from './ProductDescriptionComponent';
 import KoreanFameProduct from './KoreanFameProduct';
 import ScrollToTop from './ScrollToTop';
 import ProductByCategoryComponent from './ProductByCategoryComponent';
+import SearchedPageComponent from './SearchedPageComponent';
 
 
 // guys dto nio makikita yung mga route, saka dto ko pinagsamasama ung mga component na ginawa ko
@@ -42,9 +43,10 @@ class Kyummy extends Component{
                         <Route exact path="/details/:id">
                         <ProductDescriptionComponent/>
                         </Route>
-                        
+                        <Route path="/search/:productName" component={SearchedPageComponent}/>
                         <Route path="/details/:id/:productid" exact component={ProductDescriptionComponent}/>
                         <Route component={ErrorOccur}/>
+                        
                     </Switch>
                     <FooterComponent/>
                         
