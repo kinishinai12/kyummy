@@ -24,6 +24,10 @@ class ProductDetailsComponent extends Component{
       error:'',
     };
 
+
+    showMoreClicked=()=>{
+      this.props.history.push('/moreproducts');
+    }
     productImageClicked=(id)=>{
       console.log(id)
       this.props.history.push(`/details/${id}`)
@@ -66,14 +70,13 @@ class ProductDetailsComponent extends Component{
                     <PInfo>
                       <PTitle>{products.productName}</PTitle>
                       <PPrice>₱ {products.price}</PPrice>
-                      <PButton>Add to cart</PButton>
                     </PInfo>
                   </PCard>
                 )
               }
             </PWrapper>
             {!this.state.isErrorOccur && <PInfo>
-            <PButton><Link to="/moreproducts">Show more</Link></PButton>
+            <PButton onClick={this.showMoreClicked}>Show more</PButton>
             </PInfo>}
           </PContainer>
         )
@@ -81,33 +84,3 @@ class ProductDetailsComponent extends Component{
 }
 // as={Link} to="/moreproducts"
 export default withRouter(ProductDetailsComponent)
-
-
-
-// {
-          //     id:1,
-          //     img: '../productImages/alcohol drink/jinsoul soju/IMG_20201229_164931.jpg',
-          //     alt: 'korean Product',
-          //     name: 'beef',
-          //     desc:'Beef daw pero pork yung image',
-          //     price: 'PHP 200',
-          //     button: 'Details'
-          //   },
-          //   {
-          //     id:2,
-          //     img: pork,
-          //     alt: 'korean Product',
-          //     name: 'beef',
-          //     desc:'Beef daw pero pork yung image',
-          //     price: 'PHP 200',
-          //     button: 'Details'
-          //   },
-          //   {
-          //     id:3,
-          //     img: pork,
-          //     alt: 'korean Product',
-          //     name: 'beef',
-          //     desc:'Beef daw pero pork yung image',
-          //     price: 'PHP 200',
-          //     button: 'Details'
-          //   }

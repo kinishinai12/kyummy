@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import FacebookLoginComponent from './FacebookLoginComponent'
 import AuthenticationService from '../service/AuthenticationService'
+import { Link } from 'react-router-dom'
 
 class LoginComponent extends Component{
     constructor(props){
@@ -77,8 +78,10 @@ class LoginComponent extends Component{
                     </div>
                     <Button variant="dark" onClick={this.loginClicked}>Login</Button>
                     <div className="text-center">
+                    
                     <Card.Title as="h6" className="text-center">Or</Card.Title>
                     <FacebookLoginComponent/>
+                    <Link to="/signup">Don't have an account? regiter here!</Link>
                     </div>
                 </Card.Body>
             </Card>

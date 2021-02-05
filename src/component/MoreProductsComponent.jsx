@@ -12,7 +12,7 @@ import {
   PInfo,
   // PDesc,
   PPrice,
-  PButton
+  PButton,
 } from './productstyled/ProductComponents';
 import Container from 'react-bootstrap/esm/Container';
 // import ScrollToTop from './ScrollToTop';
@@ -32,6 +32,17 @@ export default class MoreProductsComponent extends Component {
        isLoading:true,
   };
 
+  }
+
+  productImageClicked=(id)=>{
+    console.log(id)
+    if(this.state.isLoading===false){
+      console.log("tumatagos");
+      this.props.history.push(`/details/${id}`)
+    }
+    else{
+      console.log("wait");
+    }
   }
 
     componentDidMount(){
@@ -85,11 +96,10 @@ export default class MoreProductsComponent extends Component {
                   products => 
                 
                   <PCard key={products.id}>
-                    <PImg src={products.img} alt={products.id} />
+                    <PImg src={products.img} alt={products.id} onClick={()=>this.productImageClicked(products.id)}/>
                     <PInfo>
                       <PTitle>{products.productName}</PTitle>
                       <PPrice>₱ {products.price}</PPrice>
-                      <PButton>Add to cart</PButton>
                     </PInfo>
                   </PCard>
                 )

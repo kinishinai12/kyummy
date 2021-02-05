@@ -77,7 +77,6 @@ class KoreanFameComponent extends Component{
                     <PInfo>
                       <PTitle>{products.productName}</PTitle>
                       <PPrice>₱ {products.price}</PPrice>
-                      <PButton>Add to cart</PButton>
                     </PInfo>
                   </PCard>
                 )

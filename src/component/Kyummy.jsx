@@ -18,6 +18,7 @@ import KoreanFameProduct from './KoreanFameProduct';
 import ScrollToTop from './ScrollToTop';
 import ProductByCategoryComponent from './ProductByCategoryComponent';
 import SearchedPageComponent from './SearchedPageComponent';
+import AlreadyLoggedIn from '../routing/AlreadyLoggedIn';
 
 
 // guys dto nio makikita yung mga route, saka dto ko pinagsamasama ung mga component na ginawa ko
@@ -27,28 +28,28 @@ class Kyummy extends Component{
             <>
                 <Router>
                 <ScrollToTop/>
+                    
                     <HeaderComponent history={this.props.history}/>
                     <Switch>
                         {/* responsible for home */}
                         <Route path="/" exact component={HomeComponent}/>
                         {/* responsible for when the user is logged in */}
                         <AuthenticatedRoute path="/home/:email" component={HomeComponent}/>
-                        <Route path="/signup" component = {SignUpComponent}/>
-                        <Route path="/login" component={LoginComponent}/>
+                        <AlreadyLoggedIn path="/signup" component = {SignUpComponent}/>
+                        <AlreadyLoggedIn path="/login" component={LoginComponent}/>
                         <AuthenticatedRoute path="/account" component={AccountComponent}/>
                         <Route path="/help" component={HelpCenterComponent}/>
-                        <Route path="/moreproducts" component={MoreProductsComponent}/>
+                        <Route path="/moreproducts" exact component={MoreProductsComponent}/>
                         <Route path="/koreanfame" component={KoreanFameProduct}/> 
                         <Route path="/products/:categoryName" component={ProductByCategoryComponent}/>
-                        <Route exact path="/details/:id">
-                        <ProductDescriptionComponent/>
-                        </Route>
+                        <Route exact path="/details/:id" component={ProductDescriptionComponent}/>
                         <Route path="/search/:productName" component={SearchedPageComponent}/>
                         <Route path="/details/:id/:productid" exact component={ProductDescriptionComponent}/>
                         <Route component={ErrorOccur}/>
                         
                     </Switch>
                     <FooterComponent/>
+
                         
                     
                 </Router>

@@ -8,6 +8,8 @@ import WelcomePageService from '../springboot api/WelcomePageService';
 import { withRouter } from 'react-router-dom';
 import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
+import Jumbotron from 'react-bootstrap/Jumbotron'
+import AuthenticationService from '../service/AuthenticationService';
 
 
 class ProductDescriptionComponent extends Component {
@@ -21,27 +23,40 @@ class ProductDescriptionComponent extends Component {
       productDescription:'',
       show:false,
       showAddToCart:false,
+      productPrice:'',
+      productQuantity:'',
     };
   }
   // this fucntion is for when the button "buy now " is click by the user
   buyNowClicked=()=>{
     console.log("clicked");
-    if(this.state.show === true){
+    const user = AuthenticationService.isUserLoggedIn();
+    if(user === true){
+      if(this.state.show === true){
       this.setState({show:false});
     }
     else{
       this.setState({show:true});
     }
+    }
+    else{
+      this.props.history.push('/login');
+    }
   }
 
   AddToCartClicked=()=>{
+    const user = AuthenticationService.isUserLoggedIn();
     console.log("add to cart clicked");
+    if(user === true){
     if(this.state.showAddToCart === true){
       this.setState({showAddToCart: false});
     }
     else{
       this.setState({showAddToCart: true});
     }
+  }else{
+    this.props.history.push('/login');
+  }
   }
 
   handleResize = (e) => {
@@ -63,14 +78,26 @@ class ProductDescriptionComponent extends Component {
       WelcomePageService.executeServiceGetKoreanFameProductById(this.props.match.params.productid)
       .then(response => {
         console.log(response.data.img)
-        this.setState({img: response.data.img, productName: response.data.productName, productDescription: response.data.productDescription})
+        this.setState({
+          img: response.data.img,
+          productName: response.data.productName,
+          productDescription: response.data.productDescription,
+          productPrice: response.data.price,
+          productQuantity: response.data.quantity,
+        })
       })
   }else{
     console.log("it is not koreanfame")
     WelcomePageService.executeGetProductById(this.props.match.params.id)
     .then(
       response => {
-        this.setState({img: response.data.img, productName: response.data.productName, productDescription: response.data.productDescription})
+        this.setState({
+          img: response.data.img, 
+          productName: response.data.productName, 
+          productDescription: response.data.productDescription,
+          productPrice: response.data.price,
+          productQuantity: response.data.quantity,
+        })
         
       }
     )
@@ -123,6 +150,7 @@ class ProductDescriptionComponent extends Component {
     return (
           // when the screen is wide
       <Container style={{'marginTop': "100px", 'marginBottom': "45px" }} >
+
         {windowWidth>=999 &&
         <Card style={{display: 'flex', flexDirection: 'row'}}>
         <Carousel 
@@ -142,21 +170,22 @@ class ProductDescriptionComponent extends Component {
                 className="mr-3"
                 src={this.state.img}
                  alt ="network error"
-                style={{ width: '18rem' }}
+                style={{ width: '32rem'}}
               />
                            <Card.Img
                           variant = "top"
                           className="mr-3"
                           src={this.state.img}
                           alt ="network error"
-                          style={{ width: '18rem' }}
+                          style={{ width: '32rem' }}
                            />
+
                            <Card.Img
                           variant = "top"
                           className="mr-3"
                           src={this.state.img}
                           alt ="network error"
-                          style={{ width: '18rem' }}
+                          style={{ width: '32rem' }}
                            />
                            
                         </Carousel>
@@ -165,22 +194,35 @@ class ProductDescriptionComponent extends Component {
                     
                       <Card.Body>
                       <Card.Title>{this.state.productName}</Card.Title>
+                      {/* first title */}
                       <Card.Title as="div">
-                      <Card.Text>
-                        {this.state.productDescription} Lorem ipsum dolor sit amet consectetur adipisicing elit. Ut soluta, mollitia modi excepturi accusantium ipsum dolores est blanditiis harum libero rerum repellat obcaecati dolore incidunt nobis distinctio laborum, labore sunt!
+                      <Card.Text as="h3">
+                        ₱ {this.state.productPrice}
                       </Card.Text>
+                      <Card.Text>
+                        Shipping: Lorem ipsum dolor sit amet consectetur adipisicing elit. 
+                      </Card.Text>
+                      <Card.Text>
+                        Color: selection 
+                      </Card.Text>
+                      <Card.Text>
+                        Quantity: {this.state.productQuantity}
+                      </Card.Text>
+
                       <Card.Title>
                       <Card.Link as={Button} variant="danger" onClick={this.buyNowClicked}>Buy now</Card.Link>
+                      <Card.Link as={Button} variant="outline-dark" onClick={this.AddToCartClicked}>Add to cart</Card.Link>
                       </Card.Title>
+                      {/* last title */}
                       </Card.Title>
-                        <Card.Link as={Button} variant="outline-dark" onClick={this.AddToCartClicked}>Add to cart</Card.Link>
+                        
                       </Card.Body>
                     
                    
                   </Card>            
             }   
 
-
+                {/* when the screen is for mobile */}
                 {windowWidth<=998 && <Card>
                   <Carousel
                   plugins={[
@@ -198,17 +240,21 @@ class ProductDescriptionComponent extends Component {
                     <Card.Img variant="top" src={this.state.img}/>
                     </Carousel>
                   <Card.Body>
-                    <Card.Title>Card Title</Card.Title>
+                    <Card.Title>{this.state.productName}</Card.Title>
+                    <Card.Title as="h3"> ₱{this.state.productPrice}</Card.Title>
                     <Card.Text >
-                      Some quick example text to build on the card title and make up the bulk of
-                      the card's content.
+                      Shipping: Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
                     </Card.Text>
+                    <Card.Text>
+                        Color: selection
+                      </Card.Text>
+                    <Card.Text>
+                        Quantity: {this.state.productQuantity}
+                      </Card.Text>
                     <Card.Link><Button variant="danger" onClick={this.buyNowClicked}>Buy now</Button></Card.Link>
-                  </Card.Body>
-                  <Card.Body>
-                    
                     <Card.Link><Button variant="outline-dark" onClick={this.AddToCartClicked}>Add to cart</Button></Card.Link>
                   </Card.Body>
+                    
                 </Card>}
 
                   {/* this modal is for buying an item */}
@@ -229,7 +275,7 @@ class ProductDescriptionComponent extends Component {
                         <Media.Body>
                         <h5>{this.state.productName}</h5>
                         <p>
-                            {this.state.productDescription}
+                          ₱ {this.state.productPrice}
                         </p>
                         </Media.Body>
                     </Media>
@@ -278,6 +324,17 @@ class ProductDescriptionComponent extends Component {
                     </Button>
                   </Modal.Footer>
                 </Modal>
+
+            <Jumbotron fluid style={{'marginBottom': "45px", 'marginTop': "45px"}}>
+              <Container>
+                <h5>Product Description</h5>
+                 <p>
+                  {this.state.productDescription}
+                  </p>
+                </Container>
+            </Jumbotron>
+              
+
 
           </Container>
         )
