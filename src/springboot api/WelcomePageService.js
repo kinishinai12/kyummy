@@ -18,7 +18,7 @@ class WelcomePageService {
     }
 
     executeGetAllKoreanFameSerivice(){
-        let category = "Korean Fame";
+        let category = "koreanfame";
         let page = 0;
         let size = 3;
         return axios.get(`http://localhost:8080/koreanfame/${category}/${page}/${size}`);

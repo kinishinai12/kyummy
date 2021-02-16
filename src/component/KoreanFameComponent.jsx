@@ -40,6 +40,7 @@ class KoreanFameComponent extends Component{
     WelcomePageService.executeGetAllKoreanFameSerivice()
     .then(
       response => {
+        console.log(response.data.content);
         this.setState({product: response.data.content, isLoading: false}) //taena nagulo buhay ko dito sa error na to
       }
     ).catch(error =>this.handleError(error))
@@ -54,9 +55,6 @@ class KoreanFameComponent extends Component{
     console.log(productId)
     this.props.history.push(`/details/${id}/${productId}`)
   }
-    // click=()=>{
-    //   window.location.reload();
-    // }
     render() {
         return (
             <PContainer>

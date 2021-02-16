@@ -47,10 +47,6 @@ class ControlledCarousel extends Component{
     this.setState({isLoading:false, error:"Network Error/ Can't load the data.. please try to refresh the browser", isErrorOccur: true})
   }
 
-  koreanFameClicked=(id)=>{
-    console.log(id)
-    this.props.history.push(`/details/${id}`)
-  }
 
   click=()=>{
     window.location.reload();
@@ -69,7 +65,7 @@ class ControlledCarousel extends Component{
                 
                 bestSeller =>
 
-                <Carousel.Item style={{ 'height': "400px"}} key={bestSeller.id} onClick={()=>this.koreanFameClicked(bestSeller.id)}>
+                <Carousel.Item style={{ 'height': "400px"}} key={bestSeller.id}>
                 <img className="d-block w-100" src={bestSeller.img} alt={bestSeller.id} style={{"height":'380px', "width":'380px'}}/>
               <Carousel.Caption>
               <h3><Badge variant="danger">Korean Fame</Badge></h3>

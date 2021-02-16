@@ -34,7 +34,7 @@ class Kyummy extends Component{
                         {/* responsible for home */}
                         <Route path="/" exact component={HomeComponent}/>
                         {/* responsible for when the user is logged in */}
-                        <AuthenticatedRoute path="/home/:email" component={HomeComponent}/>
+                        <AuthenticatedRoute path="/home/:username" component={HomeComponent}/>
                         <AlreadyLoggedIn path="/signup" component = {SignUpComponent}/>
                         <AlreadyLoggedIn path="/login" component={LoginComponent}/>
                         <AuthenticatedRoute path="/account" component={AccountComponent}/>

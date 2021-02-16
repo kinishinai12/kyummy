@@ -1,35 +1,45 @@
 import React, { Component } from 'react'
-import Card from 'react-bootstrap/Card'
+// import Card from 'react-bootstrap/Card'
+import Jumbotron from 'react-bootstrap/Jumbotron'
 import Button from 'react-bootstrap/Button'
 
 
 export default class AddAddressComponent extends Component {
+    constructor(props){
+        super(props);
+    }
+
     render() {
         return (
             <div>
-                <Card>
-                        <Card.Header as="h3">Address</Card.Header>
-                        <Card.Body>
-                            <Card.Title>Your Address</Card.Title>
-                            <Card.Text>
-                            
-                                Full Name: Junie Delos Reyes<br/><br/>
-                                
-                                Default: Pickup<br/><br/>
-                                
-                                Phone: (+63) 9354679565<br/><br/>
-                                
-                                Address: 594, camia street
-                                San Nicolas, Bulacan
-                                North Luzon, Bulacan 3017<br/><br/>
-                                
+               
+                <Jumbotron key={this.props.id}>
+                    <h5>Your Address</h5>
+                        <p>
+                        {this.props.detailedaddress} {this.props.barangay}, {this.props.city} {this.props.region}, {this.props.province} {this.props.postalcode}.
+                        </p>
 
-                                (para kapani-paniwala)
-                            </Card.Text>
-                            <Button variant="dark">Add Address</Button>
-                        </Card.Body>
-                </Card>
+                    <p>
+                        <Button variant="outline-success">Update</Button>
+                    </p> 
+                    <p>
+                        <Button variant="outline-danger">Delete</Button>
+                    </p>
+                </Jumbotron>
+              
             </div>
         )
     }
 }
+
+
+{/* <Card key={this.props.id}>
+<Card.Header as="h3">Address</Card.Header>
+<Card.Body>
+    <Card.Title>Your Address:</Card.Title>
+    <Card.Text>
+        {this.props.detailedaddress} {this.props.barangay}, {this.props.city} {this.props.region}, {this.props.province} {this.props.postalcode} 
+    </Card.Text>
+    <Button variant="dark">Add Address</Button>
+</Card.Body>
+</Card> */}

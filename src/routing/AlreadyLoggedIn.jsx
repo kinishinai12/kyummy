@@ -4,7 +4,7 @@ const { Route, Redirect } = require("react-router-dom");
 
 export default class AlreadyLoggedIn extends Component {
     state={
-        email: sessionStorage.getItem('authenticatedUser'),
+        email: sessionStorage.getItem('username'),
     }
     render() {
         let user = this.state.email;

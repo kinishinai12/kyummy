@@ -7,6 +7,8 @@ import Card from 'react-bootstrap/Card'
 import FacebookLoginComponent from './FacebookLoginComponent'
 import RegisterService from '../springboot api/RegisterService'
 import Modal from 'react-bootstrap/Modal'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class SignUpComponent extends Component {
     constructor(props){
@@ -26,6 +28,17 @@ class SignUpComponent extends Component {
             isNotSuccessfull:false,
             show:false,
         }
+    }
+    notify=(error)=>{
+        toast.error('🤔 you missed '+ error, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: false,
+            progress: undefined,
+            });
     }
     handleClose=()=>{
         this.setState({show:false});
@@ -53,40 +66,48 @@ class SignUpComponent extends Component {
         //checks if the email input is empty
         if(this.state.email === ''){
             this.setState({message:"Incomplete fields", isNotSuccessfull:true, show:true});
+            this.notify("email")
             console.log("please fill up the email part");
         }
         // this checks the phoneNUmber is empty
         else if(this.state.phoneNumber === '' || this.state.phoneNumber.length !== 11 ){
             console.log("must 11 numbers");
+            this.notify("phone number")
             this.setState({message:"must 11 numbers", isNotSuccessfull:true, show:true});
         }
         // this checks the password is empty or when the value's length is less than or equal to 6
         else if(this.state.password === '' || this.state.password.length<=6){
             console.log("password must contain atleast 6 characters");
+            this.notify("password")
             this.setState({message:"password must contain atleast 6 characters", isNotSuccessfull:true, show:true});
         }
         // this checks the gender is empty
         else if(this.state.gender === ''){
             console.log("Please select your gender");
+            this.notify("gender!")
             this.setState({message:"Please select your gender", isNotSuccessfull:true, show:true});
         }
         // this checks the birthday is empty or the age is valid
         else if(this.state.birthday === '' || this.checkAge(this.state.birthday) < 18){
             console.log("must 18 above");
+            this.notify("birthday")
             this.setState({message:"must 18 above", isNotSuccessfull:true, show:true});
         }
         // this checks if the firstname empty or contains shit
         else if(this.state.firstname === '' || this.state.firstname === /^[a-zA-Z0-9_]{3,10}$/){
-            console.log("firtsname must not contain unnecessary shit");
+            console.log("firstname must not contain unnecessary shit");
+            this.notify("firstname")
             this.setState({message:"firtsname must not contain unnecessary characters", isNotSuccessfull:true, show:true});
         }
         // this checks if the lastname empty or contains shit
         else if(this.state.lastname ==='' || this.state.lastname === /^[a-zA-Z0-9_]{3,10}$/){
             console.log("lastname must not contain unnecessary shit");
+            this.notify("last name")
             this.setState({message:"lastname must not contain unnecessary characters", isNotSuccessfull:true, show:true});
         }
         else if(this.state.address === ''){
             console.log("san ka nakatira");
+            this.notify("address")
             this.setState({message:"kyummy needs your address", isNotSuccessfull:true, show:true});
         }
         else{
@@ -102,8 +123,9 @@ class SignUpComponent extends Component {
             gender: this.state.gender,
             birthday: this.state.birthday,
         }
+        console.log(registrationRequest);
 
-        RegisterService.ExecuteRegisterRequest(registrationRequest)
+        RegisterService.executeRegisterRequest(registrationRequest)
         .then(
             res => {
                 this.setState({message:res.data +" kyummy sent you a mail, please verify and activate your account. ", show:true, isSuccessfull:true});
@@ -122,6 +144,7 @@ class SignUpComponent extends Component {
     render() {
         return (
             <Container style={{'marginTop': "80px", 'marginBottom': "5px", 'padding':"5%"}}>
+                <ToastContainer />
                 <Card border="dark" style={{'backgroundColor': "#e96196",
                         'backgroundImage': "linear-gradient(315deg, #e96196 0%, #ffffff 90%)", 'padding':"5%"}} >
                             {this.state.isNotSuccessfull && <div className="alert alert-danger">{this.state.message}</div>}

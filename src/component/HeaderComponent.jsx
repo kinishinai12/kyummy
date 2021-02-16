@@ -14,13 +14,15 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button';
 import CartModalComponent from './CartModalComponent';
 import AuthenticationService from '../service/AuthenticationService';
+import LoginService from '../springboot api/LoginService';
 
 
 
 class HeaderComponent extends Component{
     state={
         show:false,
-        isActive:false
+        isActive:false,
+        message:'',
     }
 
     buttonClicked=()=>{
@@ -33,6 +35,17 @@ class HeaderComponent extends Component{
     handleShow = () =>{
         this.setState({show:true})
     } 
+    logout=()=>{
+        LoginService.executeLogoutAndDeleteRefreshToken(sessionStorage.getItem('refreshToken'))
+        .then(
+            response=>{
+                this.setState({message:response.data});
+                AuthenticationService.logOut();
+                this.props.history.push('/login');
+            }
+        )
+        
+    }
 
     render(){
         const isUserLoggedIn = AuthenticationService.isUserLoggedIn();
@@ -46,13 +59,6 @@ class HeaderComponent extends Component{
                     <Nav className="mr-auto">
                     <Nav.Link onClick={this.handleShow} style={{'color': "#000000"}}><FaShoppingCart/></Nav.Link>
                     <Nav.Link as={Link} to="/help" style={{'color': "#000000"}}><IoIosHelpCircle/>Help</Nav.Link>
-                    {/* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-                        <NavDropdown.Item href="#action/3.1">lorem</NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.2">lorem</NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.3">lorem</NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item href="#action/3.4">lorem</NavDropdown.Item>
-                    </NavDropdown> */}
                     </Nav>
                     <Nav>
                     {!isUserLoggedIn && <Nav.Link as={Link} to="/signup"><Button variant="outline-success" >Sign Up</Button></Nav.Link>}
@@ -65,7 +71,7 @@ class HeaderComponent extends Component{
                             >
                                 <NavDropdown.Item as={Link} to="/account">My Account</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to="/account">My Purchase</NavDropdown.Item>
-                                <NavDropdown.Item as={Link} to="/login" onClick={AuthenticationService.logOut}>Logout</NavDropdown.Item>
+                                <NavDropdown.Item onClick={this.logout}>Logout</NavDropdown.Item>
                     </DropdownButton>}
                     </Nav>
                 </Navbar.Collapse>
@@ -119,5 +125,13 @@ class HeaderComponent extends Component{
             //     </li>
             // </ul>
             // </nav>
+
+                                /* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+                        <NavDropdown.Item href="#action/3.1">lorem</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.2">lorem</NavDropdown.Item>
+                        <NavDropdown.Item href="#action/3.3">lorem</NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item href="#action/3.4">lorem</NavDropdown.Item>
+                    </NavDropdown> */
 
 export default withRouter(HeaderComponent)

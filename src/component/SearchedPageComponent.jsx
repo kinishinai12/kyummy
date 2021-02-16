@@ -64,6 +64,10 @@ class SearchedPageComponent extends Component {
               }
           }
 
+          productImageClicked=(productId)=>{
+            this.props.history.push(`/details/${productId}`);
+          }
+
     //TODO: catch in axios
         pageChange=(value)=>{
           this.setState({
@@ -97,7 +101,7 @@ class SearchedPageComponent extends Component {
                       products => 
                     
                       <PCard key={products.id}>
-                        <PImg src={products.img} alt={products.id} />
+                        <PImg src={products.img} alt={products.id} onClick={()=>this.productImageClicked(products.id)}/>
                         <PInfo>
                           <PTitle>{products.productName}</PTitle>
                           <PPrice>₱ {products.price}</PPrice>

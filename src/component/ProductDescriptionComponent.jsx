@@ -111,17 +111,6 @@ class ProductDescriptionComponent extends Component {
       window.addEventListener("resize", this.handleResize);
      }
    }
-
-//   shouldComponentUpdate(nextProps,nextState){
-//     if(this.props.match.params.id !== nextState.id){
-//     console.log(nextState)
-//     console.log(nextProps)
-//       console.log("shouldComponentUpdate")
-//       this.refresh();
-//       return true
-//     }
-//     return false
-// }
  
    //TODO: Catch statement
   componentDidUpdate(prevProps, prevState) {
@@ -170,14 +159,14 @@ class ProductDescriptionComponent extends Component {
                 className="mr-3"
                 src={this.state.img}
                  alt ="network error"
-                style={{ width: '32rem'}}
+                style={{ width: '25rem'}}
               />
                            <Card.Img
                           variant = "top"
                           className="mr-3"
                           src={this.state.img}
                           alt ="network error"
-                          style={{ width: '32rem' }}
+                          style={{ width: '25rem' }}
                            />
 
                            <Card.Img
@@ -185,7 +174,7 @@ class ProductDescriptionComponent extends Component {
                           className="mr-3"
                           src={this.state.img}
                           alt ="network error"
-                          style={{ width: '32rem' }}
+                          style={{ width: '25rem' }}
                            />
                            
                         </Carousel>
