@@ -20,10 +20,10 @@ export default class AddAddressComponent extends Component {
                         </p>
 
                     <p>
-                        <Button variant="outline-success">Update</Button>
+                        <Button variant="outline-success" onClick={this.props.updateClicked}>Update</Button>
                     </p> 
                     <p>
-                        <Button variant="outline-danger">Delete</Button>
+                        <Button variant="outline-danger" onClick={this.props.deleteClicked}>Delete</Button>
                     </p>
                 </Jumbotron>
               

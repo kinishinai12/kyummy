@@ -9,6 +9,7 @@ import RegisterService from '../springboot api/RegisterService'
 import Modal from 'react-bootstrap/Modal'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Link } from 'react-router-dom'
 
 class SignUpComponent extends Component {
     constructor(props){
@@ -17,16 +18,16 @@ class SignUpComponent extends Component {
             email:'',
             phoneNumber:'',
             password:'',
-            lastname:'',
-            firstname:'',
+            lastName:'',
+            firstName:'',
             birthday:'',
-            address:'',
             gender:'',
             isCheck: false,
             message:'',
             isSuccessfull:false,
             isNotSuccessfull:false,
             show:false,
+            openTerms:false,
         }
     }
     notify=(error)=>{
@@ -94,34 +95,28 @@ class SignUpComponent extends Component {
             this.setState({message:"must 18 above", isNotSuccessfull:true, show:true});
         }
         // this checks if the firstname empty or contains shit
-        else if(this.state.firstname === '' || this.state.firstname === /^[a-zA-Z0-9_]{3,10}$/){
+        else if(this.state.firstName === '' || this.state.firstName === /^[a-zA-Z0-9_]{3,10}$/){
             console.log("firstname must not contain unnecessary shit");
             this.notify("firstname")
             this.setState({message:"firtsname must not contain unnecessary characters", isNotSuccessfull:true, show:true});
         }
         // this checks if the lastname empty or contains shit
-        else if(this.state.lastname ==='' || this.state.lastname === /^[a-zA-Z0-9_]{3,10}$/){
+        else if(this.state.lastName ===''){
             console.log("lastname must not contain unnecessary shit");
             this.notify("last name")
             this.setState({message:"lastname must not contain unnecessary characters", isNotSuccessfull:true, show:true});
-        }
-        else if(this.state.address === ''){
-            console.log("san ka nakatira");
-            this.notify("address")
-            this.setState({message:"kyummy needs your address", isNotSuccessfull:true, show:true});
         }
         else{
             this.setState({isNotSuccessfull:false})
         // if anything doesn't go wrong do this
         let registrationRequest ={
-            firstname: this.state.firstname,
-            lastname: this.state.lastname,
-            email: this.state.email,
-            password: this.state.password,
-            address: this.state.address,
-            phoneNumber: this.state.phoneNumber,
-            gender: this.state.gender,
             birthday: this.state.birthday,
+            email: this.state.email,
+            firstName: this.state.firstName,
+            gender: this.state.gender,
+            lastName: this.state.lastName,
+            password: this.state.password,
+            phoneNumber: this.state.phoneNumber,
         }
         console.log(registrationRequest);
 
@@ -171,12 +166,12 @@ class SignUpComponent extends Component {
 
                     <Form.Group >
                         <Form.Label>Lastname</Form.Label>
-                        <Form.Control name="lastname" value = {this.state.lastname} placeholder="lastname" onChange ={this.handlerChange}/>
+                        <Form.Control name="lastName" value = {this.state.lastName} placeholder="lastname" onChange ={this.handlerChange}/>
                     </Form.Group>
 
                     <Form.Group >
                         <Form.Label>Firstname</Form.Label>
-                        <Form.Control name="firstname" placeholder="firstname" value = {this.state.firstname} onChange ={this.handlerChange}/>
+                        <Form.Control name="firstName" placeholder="firstname" value = {this.state.firstName} onChange ={this.handlerChange}/>
                     </Form.Group>
 
                     <Form.Group >
@@ -203,7 +198,8 @@ class SignUpComponent extends Component {
 
                     <Form.Group id="formGridCheckbox">
                         {/* TODO: term of use and pricacy policy */}
-                        <Form.Check type="checkbox" label="I agree to Kyummy's, Terms of Use and Privacy Policy" />
+                        
+                        <Form.Check><Form.Check type="checkbox"/><Link to="/signup" onClick={this.termsAndConditionClicked}>I agree to Kyummy's, Terms of Use and Privacy Policy</Link></Form.Check>
                     </Form.Group>
 
                     <Button variant="dark" onClick={this.signupClicked}>
@@ -239,8 +235,52 @@ class SignUpComponent extends Component {
                     {this.state.isSuccessfull && <Button variant="primary" onClick={this.navigateToLogin}>Understood</Button>}
                     </Modal.Footer>
                 </Modal>
+
+                <Modal
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                show={this.state.openTerms}
+            onHide={this.termsAndConditionClicked}
+            keyboard={false}>
+
+            <Modal.Header closeButton>
+            <Modal.Title>Terms And Condition</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <p>
+            Welcome to KYummy web application, a small convenient store that offers Korean food products. If you continue to browse and use this web application, you are agreeing to obey with and be bound by the following terms and conditions of use. Please read them carefully. If you disagree with any part of these terms and conditions, please do not continue using our web application.
+            </p>
+            <p>
+            While using this web application you should comply with the following terms of use:
+            </p>
+            <p>●    The content of this web application is for your own use only. It can be changed without any notice.</p>
+            <p>●    The information that you will provide should be true and only your real identity. It can be used to contact and identify you. Personal information includes your name, gender, birthday, cellphone number, and email address. </p>
+            <p>●    You’re the one who is responsible to ensure that the products and services in this web application satisfied your necessities. Your use of any information in this web app is only at your own risk, we are not responsible for your actions.</p>
+            <p>●    The design, appearance and graphics of this web application is only owned by us, any trace of reproduction is prohibited unless it is notice as copyright, which is part of this terms and conditions. </p>
+            <p>●    Any unauthorized use of this web application can be called as damages or clearly a criminal offence.</p>
+            
+            </Modal.Body>
+            <Modal.Footer>
+            <Button variant="secondary" onClick={this.termsAndConditionClicked}>
+                Close
+            </Button>
+            </Modal.Footer>
+        </Modal>
             </Container>
+
         )
+    }
+
+
+    termsAndConditionClicked=()=>{
+        if(!this.state.openTerms){
+            this.setState({openTerms:true});
+        }
+        else{
+            this.setState({openTerms:false});
+        }
+        
     }
 }
 

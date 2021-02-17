@@ -17,6 +17,9 @@ import SetNewPasswordComponent from './SetNewPasswordComponent';
 import LoginService from '../springboot api/LoginService';
 import Button from 'react-bootstrap/Button'
 import AddNewAddressComponent from './AddNewAddressComponent';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from 'react-toastify';
+import UpdateAddressComponent from './UpdateAddressComponent';
 
 export default class AccountComponent extends Component {
     state={
@@ -32,7 +35,15 @@ export default class AccountComponent extends Component {
         isAdding:false,
         error:'',
         addressOfTheUser:[],
-        defaultAddress:''
+        defaultAddress:'',
+        region:'',
+        province:'',
+        city:'',
+        barangay:'',
+        postalCode:'',
+        detailedAddress:'',
+        isUpdate:false,
+        idToUpdate:'',
     }
 
     componentDidMount(){
@@ -67,7 +78,7 @@ export default class AccountComponent extends Component {
         LoginService.executeGetUserInformation(userid, token)
         .then(
             response =>{
-                
+                console.log(response.data);
                 this.setState({
                     id: response.data.id,
                     address: response.data.address, 
@@ -97,21 +108,64 @@ export default class AccountComponent extends Component {
         
     }
 
-    addAddressClicked=()=>{
-        if(this.state.isAdding === false){
-            this.setState({isAdding:true})
+    // addAddressClicked=()=>{
+    //     if(this.state.isAdding === false){
+    //         this.setState({isAdding:true})
+    //         this.setState({isUpdate:false})
+    //         this.setState({isUpdateOrAdd: false})
+    //     }
+    //     else{
+    //         this.setState({isAdding:false})
+    //         this.setState({isUpdate:true})
+    //         this.setState({isUpdateOrAdd: true})
+    //     }
+        
+    // }
+
+    deleteClicked=(addressId, token)=>{
+        LoginService.executeDeleteAddressInformation(addressId, token)
+        .then(
+            response=>{
+            console.log(response.data);
+            this.addressRefresh();
+        }).catch(
+            error=>{
+                console.log(error);
+            }
+        )
+    }
+    saveClicked=()=>{
+            this.setState({isUpdate:false});
+            this.addressRefresh();
+    }
+
+    updateClicked=(addressInfo)=>{
+        if(!this.state.isUpdate){
+            this.setState({isUpdate:true});
+            this.setState({idToUpdate: addressInfo})
         }
         else{
-            this.setState({isAdding:false})
+            this.setState({isUpdate:false});
         }
-        
     }
+
+    cleanTheInputs=()=>{
+        this.setState({
+        region:'',
+        province:'',
+        city:'',
+        barangay:'',
+        postalCode:'',
+        detailedAddress:'',
+        })
+    }
+    
     
 
     render() {
         return (
             <div className="container"  style={{'marginTop': "80px", 'marginBottom': "5px", 'padding':"2%"}}>
-
+                    <ToastContainer />
                <Tab.Container id="left-tabs-example" defaultActiveKey="first">
 
                     <Row>
@@ -130,7 +184,10 @@ export default class AccountComponent extends Component {
                             <Nav.Link eventKey="fourth">Address</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                            <Nav.Link eventKey="fifth">New password</Nav.Link>
+                            <Nav.Link eventKey="fifth">Add Address</Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                            <Nav.Link eventKey="sixth">New password</Nav.Link>
                             </Nav.Item>
                         </Nav>
                         </Col>
@@ -166,7 +223,7 @@ export default class AccountComponent extends Component {
                             </Tab.Pane>
                             {/* change address */}
                             <Tab.Pane eventKey="fourth">
-                            {!this.state.isAdding &&
+                            {(!this.state.isUpdate) &&
 
                                 this.state.addressOfTheUser.map(
                                     addressInfo=>
@@ -181,16 +238,35 @@ export default class AccountComponent extends Component {
                                 detailedaddress = {addressInfo.detailedAddress}
                                 userid = {addressInfo.userId}
                                 defaultAddress = {addressInfo.youWantItToBeDefault}
+                                updateClicked ={()=>this.updateClicked(addressInfo.id)}
+                                deleteClicked ={()=>this.deleteClicked(addressInfo.id, sessionStorage.getItem('authenticationToken'))}
                                 />
                                 )
                             }
-                            {this.state.isAdding && <AddNewAddressComponent/>}<br/>
-                            {!this.state.addressOfTheUser.length>=3 || this.state.addressOfTheUser.length===0 && !this.state.isAdding &&<Button variant="outline-dark" onClick={this.addAddressClicked}>Add</Button>}
-                            {this.state.isAdding && <Button variant="outline-warning" onClick={this.addAddressClicked}>Cancel</Button>}
+                            {(this.state.isUpdate)&& <UpdateAddressComponent
+                                            id={this.state.idToUpdate}
+                                            saveClicked = {this.saveClicked}
+                                        />}
+                         
+                            {(this.state.isUpdate) && <Button variant="outline-warning" onClick={this.updateClicked}>Cancel</Button>}
                             </Tab.Pane>
                             {/* change password */}
                             <Tab.Pane eventKey="fifth">
-                            
+                                <AddNewAddressComponent
+                                region={this.state.region}
+                                province={this.state.province}
+                                city={this.state.city}
+                                barangay={this.state.barangay}
+                                postalCode={this.state.postalCode}
+                                detailedAddress={this.state.detailedAddress}
+                                handlerChange={this.handlerChange}
+                                AddnewAddressForTheUser={this.AddnewAddressForTheUser}
+                                addressRefresh={this.addressRefresh}
+                            />
+
+
+                            </Tab.Pane>
+                            <Tab.Pane eventKey="sixth">
                                 <SetNewPasswordComponent/>
 
                             </Tab.Pane>
@@ -201,5 +277,132 @@ export default class AccountComponent extends Component {
                 </Tab.Container>
             </div>
         )
+    }
+    // for handling the text in inputs
+    handlerChange=(event)=>{
+        console.log(event.target.name);
+        this.setState({
+            [event.target.name]:event.target.value
+        })
+    }
+    // api for the adding a address
+    AddnewAddressForTheUser=()=>{
+        if(this.state.region === ''){
+            toast.error('🤔 Why missed?', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                });
+        }
+        else if(this.state.province === ''){
+            toast.error('🤔 sounds suspicous', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                });
+
+        }
+        else if(this.state.city === ''){
+            toast.error('🤔 sounds suspicous', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                });
+        }
+        else if(this.state.barangay === ''){
+            toast.error('🤔 sounds suspicous', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                });
+        }
+        else if(this.state.postalCode === ''){
+            toast.error('🤔 sounds suspicous', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                });
+        }
+        else if(this.state.detailedAddress === '' || this.state.detailedAddress.length <= 6){
+            toast.error('🤔 sounds suspicous', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                });
+        }
+        else{ 
+            const userId = sessionStorage.getItem('id');
+
+            let addressInfo ={
+                "barangay": this.state.barangay,
+                "city": this.state.city,
+                "detailedAddress": this.state.detailedAddress,
+                "postalCode": this.state.postalCode,
+                "province": this.state.province,
+                "region": this.state.region,
+                "userId": userId,
+                "youWantItToBeDefault": true,
+        }
+        console.log(addressInfo);
+        //input ka dito
+
+        LoginService.executeAddAddressInformation(addressInfo)
+        .then(respond=>{
+            toast.success('❤️ '+respond.data, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: false,
+                progress: undefined,
+                });
+                this.cleanTheInputs();
+                this.addressRefresh();
+            
+        })
+        .catch(error=>{
+            console.error(error);
+            this.notify();
+        })
+    
+    
+    }
+    }
+
+    notify=()=>{
+            toast.error('🤔 sounds suspicous', {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                });
     }
 }

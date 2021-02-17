@@ -30,7 +30,28 @@ class LoginService {
     }
 
     executeAddAddressInformation(addressDetails){
-        return authAxios.post(`/address`, {addressDetails});
+        return authAxios.post(`/address`, JSON.stringify(addressDetails));
+    }
+    executeGetSpecificAddressInformation(addressId, token){
+        return getAuthAxios.get(`/address/${addressId}/get`,{
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            
+        });
+    }
+
+    executeDeleteAddressInformation(addressId, token){
+        return getAuthAxios.delete(`/address/${addressId}/delete`,{
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            
+        });
+    }
+
+    executeUpdateAddressInformation(addressId,updatedAddressInfo){
+        return authAxios.put(`/address/${addressId}/update`, JSON.stringify(updatedAddressInfo))
     }
 
     executeLogoutAndDeleteRefreshToken(refreshToken){
