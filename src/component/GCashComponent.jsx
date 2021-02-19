@@ -11,7 +11,7 @@ export default class GCashComponent extends Component {
                     <Card.Body>
                         <Card.Title>Your Gcash</Card.Title>
                         <Card.Text>
-                        Ang programang ito ay rated spg
+                       COMING SOON
                         </Card.Text>
                         
                     </Card.Body>

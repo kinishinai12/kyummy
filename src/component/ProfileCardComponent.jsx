@@ -60,7 +60,7 @@ export default class ProfileCardComponent extends Component {
                 
                     <Card.Body>
                     <Card.Title><Card.Img src={pork} style={{width:'10rem'}} /> </Card.Title>
-                    <Card.Title><Button variant="dark">
+                    <Card.Title><Button variant="dark" disabled>
                         Select
                     </Button></Card.Title>
                     <Card.Title as="h5">My Profile</Card.Title>
@@ -70,40 +70,40 @@ export default class ProfileCardComponent extends Component {
                     <Form.Row>
                         <Form.Group as={Col}>
                         <Form.Label>First Name</Form.Label>
-                        <Form.Control type="text" placeholder={this.props.firstName} />
+                        <Form.Control type="text" value={this.props.firstName} disabled/>
                         </Form.Group>
 
                         <Form.Group as={Col}>
                         <Form.Label>Last Name</Form.Label>
-                        <Form.Control type="text" placeholder={this.props.lastName} />
+                        <Form.Control type="text" value={this.props.lastName} disabled/>
                         </Form.Group>
                     </Form.Row>
                     <Form.Row>
                         <Form.Group as={Col}>
                             <Form.Label>Phone #</Form.Label>
-                            <Form.Control type="number" placeholder={this.props.phoneNumber} />
+                            <Form.Control type="number" value={this.props.phoneNumber} disabled/>
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>email</Form.Label>
-                            <Form.Control type="email" placeholder={this.props.email} />
+                            <Form.Control type="email" value={this.props.email} disabled/>
                         </Form.Group>
 
                     </Form.Row>
                     <Form.Row>
                         <Form.Group as={Col}>
                             <Form.Label>Birthday</Form.Label>
-                            <Form.Control type="text" placeholder={this.props.birthday}/>
+                            <Form.Control type="text" value={this.props.birthday} disabled/>
                         </Form.Group>
                         <Form.Group as={Col}>
                             <Form.Label>Gender</Form.Label>
-                            <Form.Control type="text" placeholder={this.props.gender}/>
+                            <Form.Control type="text" value={this.props.gender} disabled/>
                         </Form.Group>
 
                     </Form.Row>
 
-                    {!this.props.wantToEdit && <Button variant ="success" onClick={this.props.editClicked}>Edit</Button>}
+                    {!this.props.wantToEdit && <Button variant ="success" onClick={this.props.editClicked} disabled>Edit</Button>}
 
-                    {this.props.wantToEdit && <Button variant="dark" onClick={this.props.editClicked}>Save</Button>}
+                    {this.props.wantToEdit && <Button variant="dark" onClick={this.props.editClicked} disabled>Save</Button>}
                 </Form>
                     </Card.Body>
                       

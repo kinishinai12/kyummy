@@ -10,7 +10,6 @@ class AuthenticationService{
         sessionStorage.setItem('refreshToken', refreshToken);
         sessionStorage.setItem('username', username);
         sessionStorage.setItem('id', id);
-        // this.setUpAxiosRequestInterceptors(this.getUserLoggedIn());
         this.setUpAuthAxiosInterceptors();
         this.setUpAxiosInterceptors();
     }
@@ -24,7 +23,7 @@ class AuthenticationService{
     }
 
     isUserLoggedIn() {
-        let user = sessionStorage.getItem('authenticationToken')
+        let user = sessionStorage.getItem('authenticationToken');
         if (user === null){return false}
         return true
     }
@@ -39,22 +38,7 @@ class AuthenticationService{
     bearerToken(token){
         return `Bearer ${token}`;
     }
-    
-    // setUpAxiosRequestInterceptors(token){
-    //     authAxios.interceptors.request.use(
-    //         (config)=>{
-    //             if(this.isUserLoggedIn){
-    //                 config.headers.authorization = this.bearerToken(token)
-    //                 console.log("dadaan ako parati dito")
-    //             }
-    //             return config;
-    //         }, (error) =>{
-    //             console.log(error+" hey error occured")
-    //         }
-    //     )
-    // }
     setUpAuthAxiosInterceptors(){
-        // let basicAuthHeader = 'Bearer ' + refreshToken;no
         authAxios.interceptors.response.use(
             (response) => {
                return response;
@@ -71,19 +55,11 @@ class AuthenticationService{
                     const username = sessionStorage.getItem('username');
                     return LoginService.executeRefreshToken(refreshToken, username)
                     .then(({data})=>{
-                        console.log('data');
-                        // this.successfullyLogin(data.authenticationToken, data.expiresAt, data.refreshToken, data.username, data.id)
-                        // sessionStorage.removeItem('authenticationToken');
-                        // sessionStorage.removeItem('expiresAt');
-                        // sessionStorage.removeItem('refreshToken');
-                        // sessionStorage.removeItem('username');
-                        // sessionStorage.removeItem('id');
                         sessionStorage.setItem('authenticationToken', data.authenticationToken);
                         sessionStorage.setItem('expiresAt', data.expiresAt);
                         sessionStorage.setItem('refreshToken', data.refreshToken);
                         sessionStorage.setItem('username', data.username);
                         sessionStorage.setItem('id', data.id)
-                        // this.setUpAxiosRequestInterceptors(this.getUserLoggedIn())
                         getAuthAxios.defaults.headers.common['Authorization'] = 'Bearer ' + data.authenticationToken;
                         originalRequest.headers['Authorization'] = 'Bearer ' + data.authenticationToken;
                         return getAuthAxios(originalRequest);
@@ -103,7 +79,6 @@ class AuthenticationService{
 
     
     setUpAxiosInterceptors(){
-        // let basicAuthHeader = 'Bearer ' + refreshToken;no
         getAuthAxios.interceptors.response.use(
             (response) => {
                return response;
@@ -120,19 +95,11 @@ class AuthenticationService{
                     const username = sessionStorage.getItem('username');
                     return LoginService.executeRefreshToken(refreshToken, username)
                     .then(({data})=>{
-                        console.log('data');
-                        // this.successfullyLogin(data.authenticationToken, data.expiresAt, data.refreshToken, data.username, data.id)
-                        // sessionStorage.removeItem('authenticationToken');
-                        // sessionStorage.removeItem('expiresAt');
-                        // sessionStorage.removeItem('refreshToken');
-                        // sessionStorage.removeItem('username');
-                        // sessionStorage.removeItem('id');
                         sessionStorage.setItem('authenticationToken', data.authenticationToken);
                         sessionStorage.setItem('expiresAt', data.expiresAt);
                         sessionStorage.setItem('refreshToken', data.refreshToken);
                         sessionStorage.setItem('username', data.username);
                         sessionStorage.setItem('id', data.id)
-                        // this.setUpAxiosRequestInterceptors(this.getUserLoggedIn())
                         getAuthAxios.defaults.headers.common['Authorization'] = 'Bearer ' + data.authenticationToken;
                         originalRequest.headers['Authorization'] = 'Bearer ' + data.authenticationToken;
                         return getAuthAxios(originalRequest);
@@ -152,13 +119,6 @@ class AuthenticationService{
 
 }
 
-// export let authAxios = axios.create({
-//     baseURL: `http://localhost:8080/kyummy/auth/`,
-//     headers: {
-//         'Authorization': token,
-//     }
-// });
-
 export const getAuthAxios = axios.create({
     baseURL: `http://localhost:8080/kyummy/auth/`
 });
@@ -176,7 +136,4 @@ export const authAxios = axios.create({
       return data;
     }],
   })
-// if(this.isUserLoggedIn){
-//     config.headers.authorization = basicAuthHeader
-// }
 export default new AuthenticationService()

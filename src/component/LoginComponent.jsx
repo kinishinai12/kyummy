@@ -121,7 +121,7 @@ class LoginComponent extends Component{
                     <input className="form-control" 
                     type="email" 
                     name = "email" 
-                    placeholder = "Enter your Email"
+                    placeholder = "Email"
                     value={this.state.email} 
                     onChange={this.readingInputs}/>
                     
@@ -133,6 +133,7 @@ class LoginComponent extends Component{
                     className="form-control " 
                     type="password" 
                     name = "password"
+                    placeholder="Password"
                     value = {this.state.password}
                     onChange={this.readingInputs}/>
 

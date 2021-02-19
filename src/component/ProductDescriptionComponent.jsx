@@ -10,6 +10,9 @@ import Carousel, { slidesToShowPlugin } from '@brainhubeu/react-carousel';
 import '@brainhubeu/react-carousel/lib/style.css';
 import Jumbotron from 'react-bootstrap/Jumbotron'
 import AuthenticationService from '../service/AuthenticationService';
+import LoginService from '../springboot api/LoginService'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 class ProductDescriptionComponent extends Component {
@@ -24,7 +27,10 @@ class ProductDescriptionComponent extends Component {
       show:false,
       showAddToCart:false,
       productPrice:'',
-      productQuantity:'',
+      productQuantity:0,
+      quantity:0,
+      category:'',
+      exist:false,
     };
   }
   // this fucntion is for when the button "buy now " is click by the user
@@ -43,21 +49,74 @@ class ProductDescriptionComponent extends Component {
       this.props.history.push('/login');
     }
   }
-
-  AddToCartClicked=()=>{
-    const user = AuthenticationService.isUserLoggedIn();
-    console.log("add to cart clicked");
+  notify=(ok)=>{
+    toast.success('🤔 '+ ok, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+        
+        });
+}
+  AddToCartClicked=(quantity)=>{
+  this.setState({quantity: quantity + 1})
+  const user = AuthenticationService.isUserLoggedIn();
     if(user === true){
-    if(this.state.showAddToCart === true){
-      this.setState({showAddToCart: false});
-    }
+      LoginService.executeExistingCartItem(sessionStorage.getItem('id'),this.state.productName,sessionStorage.getItem('authenticationToken'))
+      .then(
+        response=>{
+
+          let exist = response.data;
+          if(exist === false){
+            console.log(exist)
+            let product ={
+              productName: this.state.productName,
+              userId: sessionStorage.getItem('id'),
+              price: this.state.productPrice,
+              quantity: quantity + 1,
+              img: this.state.img,
+              category: this.state.category,
+              color:null,
+              flavor:null
+            }
+          LoginService.executeAddToCart(product)
+          .then(response=>{
+            this.notify(response.data);
+          })
+          .catch(error=>{console.log(error);})
+        }
+        else{
+          let updatedProduct ={
+            productName: this.state.productName,
+            userId: sessionStorage.getItem('id'),
+            price: this.state.productPrice,
+            quantity: quantity + 1,
+            img: this.state.img,
+            category: this.state.category,
+            color:null,
+            flavor:null
+          }
+          // dito para sa updated
+          LoginService.executeUpdateQuantity(sessionStorage.getItem('id'), this.state.productName, updatedProduct)
+          .then(response=>{
+            this.notify(response.data);
+          }).catch(error=>{console.log(error)})
+        }
+        }
+      ).catch(error=>{
+        console.log(error)
+      })
+
+      // baka hanapin mo andito lang
+      
+  }
     else{
-      this.setState({showAddToCart: true});
+      this.props.history.push('/login');
     }
-  }else{
-    this.props.history.push('/login');
-  }
-  }
+    }
 
   handleResize = (e) => {
     this.setState({ windowWidth: window.innerWidth });
@@ -83,11 +142,11 @@ class ProductDescriptionComponent extends Component {
           productName: response.data.productName,
           productDescription: response.data.productDescription,
           productPrice: response.data.price,
-          productQuantity: response.data.quantity,
+          category: response.data.category,
         })
+        console.log(response.data);
       })
   }else{
-    console.log("it is not koreanfame")
     WelcomePageService.executeGetProductById(this.props.match.params.id)
     .then(
       response => {
@@ -97,6 +156,7 @@ class ProductDescriptionComponent extends Component {
           productDescription: response.data.productDescription,
           productPrice: response.data.price,
           productQuantity: response.data.quantity,
+          category: response.data.category
         })
         
       }
@@ -135,11 +195,11 @@ class ProductDescriptionComponent extends Component {
       // for responsive ui
     const { windowWidth } = this.state; 
     console.log(windowWidth);
-
+    let quantity = this.state.quantity
     return (
           // when the screen is wide
       <Container style={{'marginTop': "100px", 'marginBottom': "45px" }} >
-
+        <ToastContainer />
         {windowWidth>=999 &&
         <Card style={{display: 'flex', flexDirection: 'row'}}>
         <Carousel 
@@ -195,12 +255,12 @@ class ProductDescriptionComponent extends Component {
                         Color: selection 
                       </Card.Text>
                       <Card.Text>
-                        Quantity: {this.state.productQuantity}
+                        Quantity: {this.state.quantity}
                       </Card.Text>
 
                       <Card.Title>
                       <Card.Link as={Button} variant="danger" onClick={this.buyNowClicked}>Buy now</Card.Link>
-                      <Card.Link as={Button} variant="outline-dark" onClick={this.AddToCartClicked}>Add to cart</Card.Link>
+                      <Card.Link as={Button} variant="outline-dark" onClick={()=>this.AddToCartClicked(quantity)}>Add to cart</Card.Link>
                       </Card.Title>
                       {/* last title */}
                       </Card.Title>
@@ -238,7 +298,7 @@ class ProductDescriptionComponent extends Component {
                         Color: selection
                       </Card.Text>
                     <Card.Text>
-                        Quantity: {this.state.productQuantity}
+                        Quantity: {this.state.quantity}
                       </Card.Text>
                     <Card.Link><Button variant="danger" onClick={this.buyNowClicked}>Buy now</Button></Card.Link>
                     <Card.Link><Button variant="outline-dark" onClick={this.AddToCartClicked}>Add to cart</Button></Card.Link>
@@ -276,40 +336,6 @@ class ProductDescriptionComponent extends Component {
                     </Button>
                     <Button variant="danger">
                       Buy
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-
-                {/* this modal is for add to cart confirmation*/}
-                <Modal show={this.state.showAddToCart} onHide={this.AddToCartClicked}>
-                  <Modal.Header closeButton>
-                    <Modal.Title>Add to Cart hell yeah!</Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                  <ul className="list-unstyled">
-                    <Media as="li">
-                        <img
-                        width={54}
-                        height={54}
-                        className="mr-3"
-                        src={this.state.img}
-                        alt="Network Error"
-                        />
-                        <Media.Body>
-                        <h5>{this.state.productName}</h5>
-                        <p>
-                            {this.state.productDescription}
-                        </p>
-                        </Media.Body>
-                    </Media>
-                 </ul>
-                 </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="secondary" onClick={this.AddToCartClicked}>
-                      Cancel
-                    </Button>
-                    <Button variant="danger">
-                      Confirm
                     </Button>
                   </Modal.Footer>
                 </Modal>

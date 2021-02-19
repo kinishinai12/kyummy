@@ -15,6 +15,9 @@ import Button from 'react-bootstrap/Button';
 import CartModalComponent from './CartModalComponent';
 import AuthenticationService from '../service/AuthenticationService';
 import LoginService from '../springboot api/LoginService';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Badge from 'react-bootstrap/Badge';
 
 
 
@@ -23,6 +26,9 @@ class HeaderComponent extends Component{
         show:false,
         isActive:false,
         message:'',
+        product:[],
+
+
     }
 
     buttonClicked=()=>{
@@ -34,7 +40,17 @@ class HeaderComponent extends Component{
     }
     handleShow = () =>{
         this.setState({show:true})
+        LoginService.executeGetCart(sessionStorage.getItem('id'),sessionStorage.getItem('authenticationToken'))
+        .then(response=>{
+            this.setState({
+                product:response.data,
+            })
+        })
+        .catch(error=>{
+            console.log(error)
+        });
     } 
+
     logout=()=>{
         LoginService.executeLogoutAndDeleteRefreshToken(sessionStorage.getItem('refreshToken'))
         .then(
@@ -46,18 +62,77 @@ class HeaderComponent extends Component{
         )
         
     }
+    deleteCartItem=(cartId)=>{
+
+        LoginService.executeDeleteCart(cartId,sessionStorage.getItem('authenticationToken'))
+        .then(
+            response=>{
+                this.handleShow();
+                
+        })
+        .catch(error=>{
+            console.log(error);
+        })
+    }
+
+    summaryPrice=(price, quantity)=>{
+        let totalPrice = 0;
+        return totalPrice += price * quantity;
+    }
+
+    reserveList=(totalPrice)=>{
+        LoginService.executeGetCart(sessionStorage.getItem('id'),sessionStorage.getItem('authenticationToken'))
+        .then(response=>{
+            this.setState({product:response.data,})
+            let orderToBePending={
+                address: null,
+                email: sessionStorage.getItem('email'),
+                "phoneNumber": sessionStorage.getItem('username'),
+                "product":  [
+                    {
+                    category: response.data.category,
+                    price: response.data.price,
+                    productName: response.data.productName,
+                    quantity: response.data.quantity
+                    }
+                ]
+            ,
+                "totalPrice": totalPrice,
+                "userId": sessionStorage.getItem('id')
+            }
+            //umpisa dito
+            LoginService.executePending(orderToBePending)
+            .then(
+                response=>{
+                    this.setState({message: response.data});
+                    this.deleteAllCart();
+                    console.log(response.data)
+                })
+                .catch(
+                    error=>{
+                        console.log(error)
+                    })
+        })
+        .catch(error=>{
+            console.log(error)
+        });
+
+        
+    }
 
     render(){
         const isUserLoggedIn = AuthenticationService.isUserLoggedIn();
+        let totalPrice= this.state.product.reduce(((a,c)=> a+c.price*c.quantity), 0)
         return (
             <header>
+                <ToastContainer />
             <Navbar fixed="top" collapseOnSelect expand="lg" bg="light" variant="light" className="peach-nav">
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Brand as={Link} to="/"><img src={favicon} alt="logo"/></Navbar.Brand>
                 <Navbar.Collapse id="responsive-navbar-nav">
                 <SearchComponent/>
                     <Nav className="mr-auto">
-                    <Nav.Link onClick={this.handleShow} style={{'color': "#000000"}}><FaShoppingCart/></Nav.Link>
+                    {isUserLoggedIn && <Nav.Link onClick={this.handleShow} style={{'color': "#000000"}}><FaShoppingCart/><Badge variant="light">0</Badge></Nav.Link>}
                     <Nav.Link as={Link} to="/help" style={{'color': "#000000"}}><IoIosHelpCircle/>Help</Nav.Link>
                     </Nav>
                     <Nav>
@@ -84,14 +159,38 @@ class HeaderComponent extends Component{
             <Modal.Title>Cart</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-                <CartModalComponent/>
-                <CartModalComponent/>
-                <CartModalComponent/>
-                <CartModalComponent/>
+              {
+                  this.state.product.map(
+                      cart=>
+                  
+                <CartModalComponent key={cart.id}
+                    category={cart.category}
+                    color={cart.color}
+                    flavor={cart.flavor}
+                    id={cart.id}
+                    img={cart.img}
+                    price={cart.price}
+                    productName={cart.productName}
+                    quantity={cart.quantity}
+                    userId={cart.userId}
+                    deleteCartItem={()=>this.deleteCartItem(cart.id)}
+                />
+                  )
+              }
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="dark" onClick={this.handleClose}>
-              go to cart
+          <Modal.Body>
+ 
+            <Modal.Title>
+                ₱ {totalPrice}
+            </Modal.Title>
+
+          </Modal.Body>
+            <Button variant="primary" onClick={this.handleClose}>
+              Close
+            </Button>
+            <Button variant="dark" onClick={()=>this.reserveList(totalPrice)}>
+              Check Out
             </Button>
           </Modal.Footer>
         </Modal>
@@ -99,39 +198,25 @@ class HeaderComponent extends Component{
         );
 
     }
+    checkOut=()=>{
+ 
+    }
+
+    deleteAllCart=()=>{
+        LoginService.executeDeleteAllCart(sessionStorage.getItem('id'),sessionStorage.getItem('authenticationToken'))
+        .then(response=>{
+            console.log(response.data);
+            this.handleShow();
+        })
+        .catch(error=>{
+            console.log(error);
+        })
+
+    }
+    
+
+
+
 }
-
-
-
-            //     <nav className="navbar navbar-expand-md peach-nav">
-            // <ul className="nav justify-content-center">
-            //     <li className="nav-item">
-            //         <a className="nav-link" href="#">lorem</a>
-            //     </li>
-            //     <li claclassNamess="nav-item">
-            //         <a className="nav-link" href="#">lorem</a>
-            //     </li>
-            //     <li className="nav-item">
-            //         <a className="nav-link" href="#">lorem</a>
-            //     </li>
-            //     <li className="nav-item">
-            //         <a className="nav-link" href="#">lorem</a>
-            //     </li>
-            //     <li className="nav-item">
-            //         <a className="nav-link" href="#">lorem</a>
-            //     </li>
-            //     <li className="nav-item">
-            //         <a className="nav-link" href="#">lorem</a>
-            //     </li>
-            // </ul>
-            // </nav>
-
-                                /* <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-                        <NavDropdown.Item href="#action/3.1">lorem</NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.2">lorem</NavDropdown.Item>
-                        <NavDropdown.Item href="#action/3.3">lorem</NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item href="#action/3.4">lorem</NavDropdown.Item>
-                    </NavDropdown> */
 
 export default withRouter(HeaderComponent)

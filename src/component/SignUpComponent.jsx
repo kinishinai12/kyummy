@@ -9,7 +9,7 @@ import RegisterService from '../springboot api/RegisterService'
 import Modal from 'react-bootstrap/Modal'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link } from 'react-router-dom'
+import { FaReadme } from 'react-icons/fa';
 
 class SignUpComponent extends Component {
     constructor(props){
@@ -28,6 +28,7 @@ class SignUpComponent extends Component {
             isNotSuccessfull:false,
             show:false,
             openTerms:false,
+            iagreee:false,
         }
     }
     notify=(error)=>{
@@ -61,6 +62,13 @@ class SignUpComponent extends Component {
         this.setState({
             [event.target.name]:event.target.value
         })
+    }
+    iAgree=()=>{
+        if(this.state.iagree === false){
+        this.setState({iagree:true})
+        }else{
+            this.setState({iagree:false})
+        }
     }
     // when the user click the signup button
     signupClicked=()=>{
@@ -106,6 +114,9 @@ class SignUpComponent extends Component {
             this.notify("last name")
             this.setState({message:"lastname must not contain unnecessary characters", isNotSuccessfull:true, show:true});
         }
+        // else if(this.state.iagree === false){
+        //     this.notify("if you're not agree to us. sorry but please leave now");
+        // }
         else{
             this.setState({isNotSuccessfull:false})
         // if anything doesn't go wrong do this
@@ -117,6 +128,7 @@ class SignUpComponent extends Component {
             lastName: this.state.lastName,
             password: this.state.password,
             phoneNumber: this.state.phoneNumber,
+            iagree:false,
         }
         console.log(registrationRequest);
 
@@ -174,11 +186,6 @@ class SignUpComponent extends Component {
                         <Form.Control name="firstName" placeholder="firstname" value = {this.state.firstName} onChange ={this.handlerChange}/>
                     </Form.Group>
 
-                    <Form.Group >
-                        <Form.Label>Address</Form.Label>
-                        <Form.Control name="address" placeholder="Address" value = {this.state.address} onChange ={this.handlerChange}/>
-                    </Form.Group>
-
                     <Form.Row>
                         <Form.Group as={Col} >
                         <Form.Label>Birthday</Form.Label>
@@ -195,13 +202,12 @@ class SignUpComponent extends Component {
                         </Form.Group>
 
                     </Form.Row>
-
-                    <Form.Group id="formGridCheckbox">
+                    <Form.Row>
+                    <Form.Group>
                         {/* TODO: term of use and pricacy policy */}
-                        
-                        <Form.Check><Form.Check type="checkbox"/><Link to="/signup" onClick={this.termsAndConditionClicked}>I agree to Kyummy's, Terms of Use and Privacy Policy</Link></Form.Check>
+                        <Form.Check type="checkbox" label="I agree to Kyummy's, Terms of Use and Privacy Policy" onClick={this.iAgree}/><Form.Label onClick={this.termsAndConditionClicked}><FaReadme/></Form.Label>
                     </Form.Group>
-
+                    </Form.Row>
                     <Button variant="dark" onClick={this.signupClicked}>
                         Sign Up
                     </Button>

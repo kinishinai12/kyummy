@@ -1,10 +1,7 @@
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import { Component } from 'react';
 import HeaderComponent from './HeaderComponent';
-// import ControlledCarousel from './ControlledCarousel';
 import FooterComponent from './FooterComponent';
-// import CategoryComponent from './CategoryComponent';
-// import ProductDetailsComponent from './ProductDetailsComponent';
 import HomeComponent from './HomeComponent';
 import LoginComponent from './LoginComponent';
 import ErrorOccur from './ErrorOccur';
@@ -19,9 +16,9 @@ import ScrollToTop from './ScrollToTop';
 import ProductByCategoryComponent from './ProductByCategoryComponent';
 import SearchedPageComponent from './SearchedPageComponent';
 import AlreadyLoggedIn from '../routing/AlreadyLoggedIn';
+import PendingAndReadyComponent from './PendingAndReadyComponent';
 
 
-// guys dto nio makikita yung mga route, saka dto ko pinagsamasama ung mga component na ginawa ko
 class Kyummy extends Component{
     render() {
         return (
@@ -38,6 +35,7 @@ class Kyummy extends Component{
                         <AlreadyLoggedIn path="/signup" component = {SignUpComponent}/>
                         <AlreadyLoggedIn path="/login" component={LoginComponent}/>
                         <AuthenticatedRoute path="/account" component={AccountComponent}/>
+                        <AuthenticatedRoute path="/pending" component={PendingAndReadyComponent}/>
                         <Route path="/help" component={HelpCenterComponent}/>
                         <Route path="/moreproducts" exact component={MoreProductsComponent}/>
                         <Route path="/koreanfame" component={KoreanFameProduct}/> 

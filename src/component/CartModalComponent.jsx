@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
+import Button from 'react-bootstrap/esm/Button';
 import Media from 'react-bootstrap/Media'
-import pork from '../image/pork.jpg';
+import { FaTrash } from 'react-icons/fa';
 
 export default class CartModalComponent extends Component {
+
     render() {
         return (
             <div>
@@ -12,15 +14,14 @@ export default class CartModalComponent extends Component {
                         width={54}
                         height={54}
                         className="mr-3"
-                        src={pork}
-                        alt="Generic placeholder"
+                        src={this.props.img}
+                        alt="network error"
                         />
                         <Media.Body>
-                        <h5>Pork</h5>
-                        <p>
-                            tama na wag ka ng maglagay pa sa cart masyado ka ng magastos, pede 
-                            ba tumigil ka na .. hays bahala ka nga dyan.
-                        </p>
+                        <h5>{this.props.productName}</h5>
+                        <p>{this.props.quantity}</p>
+                        <p>₱ {this.props.price}</p>
+                        <Button variant="outline-danger" onClick={this.props.deleteCartItem}><FaTrash/></Button>
                         </Media.Body>
                     </Media>
                  </ul>
