@@ -17,7 +17,7 @@ import AuthenticationService from '../service/AuthenticationService';
 import LoginService from '../springboot api/LoginService';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Badge from 'react-bootstrap/Badge';
+
 
 
 
@@ -27,7 +27,7 @@ class HeaderComponent extends Component{
         isActive:false,
         message:'',
         product:[],
-
+        productorder:[{}],
 
     }
 
@@ -44,7 +44,9 @@ class HeaderComponent extends Component{
         .then(response=>{
             this.setState({
                 product:response.data,
+
             })
+            console.log(this.state.productorder)
         })
         .catch(error=>{
             console.log(error)
@@ -84,19 +86,13 @@ class HeaderComponent extends Component{
         LoginService.executeGetCart(sessionStorage.getItem('id'),sessionStorage.getItem('authenticationToken'))
         .then(response=>{
             this.setState({product:response.data,})
+                
+                 
+            console.log(this.state.productorder);
             let orderToBePending={
-                address: null,
-                email: sessionStorage.getItem('email'),
-                "phoneNumber": sessionStorage.getItem('username'),
-                "product":  [
-                    {
-                    category: response.data.category,
-                    price: response.data.price,
-                    productName: response.data.productName,
-                    quantity: response.data.quantity
-                    }
-                ]
-            ,
+                "address": null,
+                "email": sessionStorage.getItem('username'),
+                "product":  this.state.product,
                 "totalPrice": totalPrice,
                 "userId": sessionStorage.getItem('id')
             }
@@ -104,9 +100,8 @@ class HeaderComponent extends Component{
             LoginService.executePending(orderToBePending)
             .then(
                 response=>{
-                    this.setState({message: response.data});
                     this.deleteAllCart();
-                    console.log(response.data)
+                    alert(response.data+" please wait for someone to call for the confirmation");
                 })
                 .catch(
                     error=>{
@@ -121,6 +116,7 @@ class HeaderComponent extends Component{
     }
 
     render(){
+      
         const isUserLoggedIn = AuthenticationService.isUserLoggedIn();
         let totalPrice= this.state.product.reduce(((a,c)=> a+c.price*c.quantity), 0)
         return (
@@ -132,7 +128,7 @@ class HeaderComponent extends Component{
                 <Navbar.Collapse id="responsive-navbar-nav">
                 <SearchComponent/>
                     <Nav className="mr-auto">
-                    {isUserLoggedIn && <Nav.Link onClick={this.handleShow} style={{'color': "#000000"}}><FaShoppingCart/><Badge variant="light">0</Badge></Nav.Link>}
+                    {isUserLoggedIn && <Nav.Link onClick={this.handleShow} style={{'color': "#000000"}}><FaShoppingCart/></Nav.Link>}
                     <Nav.Link as={Link} to="/help" style={{'color': "#000000"}}><IoIosHelpCircle/>Help</Nav.Link>
                     </Nav>
                     <Nav>
@@ -142,7 +138,7 @@ class HeaderComponent extends Component{
                     {isUserLoggedIn &&<DropdownButton
                             menuAlign={{ lg: 'right' }}
                             title={<ProfileNavbarComponent/>}
-                            variant="dark"
+                            variant="light"
                             >
                                 <NavDropdown.Item as={Link} to="/account">My Account</NavDropdown.Item>
                                 <NavDropdown.Item as={Link} to="/account">My Purchase</NavDropdown.Item>
@@ -173,11 +169,13 @@ class HeaderComponent extends Component{
                     productName={cart.productName}
                     quantity={cart.quantity}
                     userId={cart.userId}
-                    deleteCartItem={()=>this.deleteCartItem(cart.id)}
+                    deleteCartItem={()=>this.deleteCartItem(cart.id)
+                    }
                 />
                   )
               }
           </Modal.Body>
+
           <Modal.Footer>
           <Modal.Body>
  
@@ -189,6 +187,7 @@ class HeaderComponent extends Component{
             <Button variant="primary" onClick={this.handleClose}>
               Close
             </Button>
+
             <Button variant="dark" onClick={()=>this.reserveList(totalPrice)}>
               Check Out
             </Button>

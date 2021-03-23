@@ -97,11 +97,6 @@ class SignUpComponent extends Component {
             this.setState({message:"Please select your gender", isNotSuccessfull:true, show:true});
         }
         // this checks the birthday is empty or the age is valid
-        else if(this.state.birthday === '' || this.checkAge(this.state.birthday) < 18){
-            console.log("must 18 above");
-            this.notify("birthday")
-            this.setState({message:"must 18 above", isNotSuccessfull:true, show:true});
-        }
         // this checks if the firstname empty or contains shit
         else if(this.state.firstName === '' || this.state.firstName === /^[a-zA-Z0-9_]{3,10}$/){
             console.log("firstname must not contain unnecessary shit");
